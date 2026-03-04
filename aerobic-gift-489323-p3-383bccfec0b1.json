@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "aerobic-gift-489323-p3",
+  "private_key_id": "383bccfec0b195bf7c7fb3163511d9101c613703",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDU21PjMMCp/f0L\nF26YPBSD9PBYNwuIOfjFe5NmDjg8TSCvsv0Nkk7eh97gZ5TLVN2DWuJMp/adScSI\nhFr0FiYGMaBZQSHES15JAtjGBqGVPtFN3SHkylvH2B2B5oA9tnbwftBIy4nn3gvH\nAYk285s9h94AnIHoqdT8KoZ3oPIu7KPD53y02Y4Cg5OLXDOcCdhCFWeuMtN6hlWV\n3lFeKQFT2HKnpFX5MpgZ++l3hcW5An/LbJAQz1VN/bxMPGjKW81Pm1Aj7zzvLhNw\nZkgwnZvxsdLLLOakhovOS80cZpGiN7NyngmxkkxwYORWFfuBOsY7z1oVxCrHeZUc\n+mTBeWWnAgMBAAECggEAAQt30V6Sub9T+/TlzWzv/v1yvYcSdLJfQrrRkmsh22vX\npOp4PRre33UWuEB8RuAwYCkb1sYUEFmeZpUR9I3CdoCd0ferMORD9obIEbk2Dbhb\nH24Iyw5P5BeLa0/K+t8C/By8bLsySo51S8kWFsxZ3nGKyOwYL9A6x5t+ysUyrOc0\nt0mTEJwu8LCQ/yQY75HxB68QImFevouYVecg7dmSjRpaj5p3LBTseK61dfKheRVr\ncAH1s6y3LlahUWJshm1UAfF7Vx2dvJ+XH/2zcD98JFMC3ULUyPH6M3rXpd5Um97S\niRcubFHEKkkQ0u+nC1gdYSJQIo92SBA0acToNXJiUQKBgQDz2ocJ+4wXOeiOK2BW\ncCWmts0xVCNTcKy4Vi7th8cBV+1hc0IIvFG8txBeYbG6DPb9bycjYM+n9SQItoSH\nxN5soivO4Yi8ZYBMrqvzlXEL6v7vFqfctH3E/DHiC20sgovuXC1qPO0nNmE1JbJh\nZcWeiltmuOFLayYuGvWY09Rc8QKBgQDfdYwGlSz8xaroIiU24Ex30ICb5FnacePR\nnJorZXNKrhQJ8Z49W5LENW4l+za6446YMymU0+uLBoB2EykWppxKE13UlGN+xTFM\nxWdBCBWDSHACZHV/qNYgVs3+Xcl1Suugm9DgG2/8YMuAUr7XQSlUvQfUqa2iiObt\nASymGKXMFwKBgGRw1EJmXBONBJ7aevnfg4KhtO7miw5pUJs01Gt+C5ggEWScRsy2\nVKx4csONVdkeUfWdfO9zhtTVghwcoYYSrtLsEUNLXjjLTgdHwwe3vDJ+frcYC9g6\nd7tVbW5/6l30/5IUYZhqs/v8yBlOB6VaeAWPU4qCCDo6TiWbcSGbztLhAoGAOcUa\n6UzBr6uuroq9Uj2Up1kZFrRnYmkVO8iftt5oewMcHSIBBd3ZyK4DhwA2OwS/hauc\ncWSEPZH1vhDgC4IRX7k4BdBDFLAIOc/DDPX5EdK1Wnj8Q3+zs/KdGMjIX3F6DzCZ\nRIbzYazoj4lU2zN2avjfwGQJhr6b7OPj1iEDJAsCgYEAgxIDfMEYfLbVE/nao638\nA7B0kDZWsI7jQuZKazp9X4xOE0ktLWgI1AM2vpxn/NNdPoupB1qSsk3aJ5R5A+AL\nmWrqx19ppiJHpzYNtWGM1vTMXHXe1tQe7eXFgQ998u4jCn2GSP/m25mReF8hPnqz\nnqf5EYnP35bDOe/BoHnBnDI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "nestle-bot@aerobic-gift-489323-p3.iam.gserviceaccount.com",
+  "client_id": "114865234014579370178",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/nestle-bot%40aerobic-gift-489323-p3.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
