@@ -1,0 +1,24 @@
+name: Nestle AI Daily Prediction
+
+on:
+  schedule:
+    - cron: '0 16 * * 1-5'  # Κάθε μέρα 16:00 UTC = 18:00 Ελλάδα
+  workflow_dispatch:  # Για χειροκίνητη εκτέλεση
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install packages
+        run: |
+          pip install gspread google-auth catboost lightgbm ta yfinance scikit-learn xgboost pandas numpy
+
+      - name: Run Nestle AI
+        run: python nestle_ai_sheets.py
