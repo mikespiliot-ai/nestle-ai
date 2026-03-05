@@ -116,7 +116,7 @@ def fetch_all_data():
 
     if not fng_df.empty:
         df = df.join(fng_df, how='left')
-        df['FNG'] = df['FNG'].fillna(method='ffill')
+        df['FNG'] = df['FNG'].ffill()
     else:
         df['FNG'] = 50
 
