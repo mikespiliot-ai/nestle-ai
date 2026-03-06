@@ -3,8 +3,6 @@ import pandas as pd
 import numpy as np
 import ta
 import requests
-import os
-import json
 import warnings
 from datetime import datetime
 from sklearn.preprocessing import StandardScaler
@@ -51,11 +49,10 @@ def connect_to_sheets():
     client = gspread.authorize(creds)
     sheet = client.open_by_key(SHEET_ID)
 
-    # Δημιουργία sheets αν δεν υπάρχουν
     existing = [ws.title for ws in sheet.worksheets()]
 
     if "Προβλέψεις" not in existing:
-        ws = sheet.add_worksheet(title="Προβλέψεις", rows=100, cols=15)
+        ws = sheet.add_worksheet(title="Προβλέψεις", rows=200, cols=15)
         headers = [
             "Ημερομηνία", "Σήμα", "Εμπιστοσύνη (%)", "Πιθανότητα Ανόδου (%)",
             "Τιμή Αγοράς (CHF)", "RSI", "VIX", "Fear & Greed",
@@ -63,7 +60,7 @@ def connect_to_sheets():
         ]
         ws.append_row(headers)
         log("  -> Sheet 'Προβλέψεις' δημιουργήθηκε")
-    
+
     if "Στατιστικά" not in existing:
         ws2 = sheet.add_worksheet(title="Στατιστικά", rows=10, cols=6)
         headers2 = ["Συνολικές Προβλέψεις", "Σωστές", "Λάθος", "Ποσοστό Επιτυχίας (%)", "Τελευταία Ενημέρωση"]
@@ -232,7 +229,6 @@ def check_yesterday(sheet, df):
         else:
             result = "➖ ΟΥΔΕΤΕΡΟ"
 
-        # Ενημέρωση τελευταίας γραμμής
         last_row_index = len(all_rows)
         ws.update_cell(last_row_index, 10, round(today_price, 2))
         ws.update_cell(last_row_index, 11, pct_change)
@@ -268,23 +264,21 @@ def save_to_sheets(sheet, prediction, model_accuracy):
         prediction['vix'],
         prediction['fng'],
         model_accuracy,
-        "",  # Τιμή αύριο - θα συμπληρωθεί αύριο
-        "",  # Μεταβολή - θα συμπληρωθεί αύριο
-        "ΑΝΑΜΕΝΕΤΑΙ",  # Αποτέλεσμα
+        "",           # Τιμή αύριο
+        "",           # Μεταβολή
+        "ΑΝΑΜΕΝΕΤΑΙ", # Αποτέλεσμα
     ]
 
     ws.append_row(new_row)
 
-    # Ενημέρωση στατιστικών
     ws_stats = sheet.worksheet("Στατιστικά")
-    all_rows = ws.get_all_values()[1:]  # Χωρίς header
+    all_rows = ws.get_all_values()[1:]
 
     correct = sum(1 for r in all_rows if len(r) > 11 and "ΣΩΣΤΟ" in r[11])
     wrong = sum(1 for r in all_rows if len(r) > 11 and "ΛΑΘΟΣ" in r[11])
     total = correct + wrong
     success_rate = round(correct / total * 100, 2) if total > 0 else 0
 
-    # Καθαρισμός και εγγραφή στατιστικών
     ws_stats.clear()
     ws_stats.append_row(["Συνολικές Προβλέψεις", "Σωστές", "Λάθος", "Ποσοστό Επιτυχίας (%)", "Τελευταία Ενημέρωση"])
     ws_stats.append_row([len(all_rows), correct, wrong, success_rate, TODAY])
@@ -310,9 +304,9 @@ if __name__ == "__main__":
         save_to_sheets(sheet, prediction, accuracy)
 
         log("=" * 55)
-        log(f"ΣΗΜΑ    : {prediction['signal']}")
+        log(f"ΣΗΜΑ       : {prediction['signal']}")
         log(f"ΕΜΠΙΣΤΟΣΥΝΗ: {prediction['confidence']}%")
-        log(f"ΤΙΜΗ    : {prediction['price']} CHF")
+        log(f"ΤΙΜΗ       : {prediction['price']} CHF")
         log("=" * 55)
 
     except Exception as e:
