@@ -1,47 +1,30 @@
-name: Nestle Daily Prediction
+name: Nestle AI Daily Prediction
 
 on:
   schedule:
-    # Τρέχει κάθε μέρα στις 18:30 UTC (= 19:30 ώρα Ελλάδας, μετά το κλείσιμο αγοράς)
-    - cron: '30 18 * * 1-5'   # Δευτέρα - Παρασκευή μόνο
-  workflow_dispatch:           # Επιτρέπει και χειροκίνητη εκτέλεση
+    - cron: '30 17 * * 1-5'  # 17:30 UTC = 19:30 Ελλάδα (μετά κλείσιμο SIX)
+  workflow_dispatch:  # Για χειροκίνητη εκτέλεση
 
 jobs:
   predict:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          cache: 'pip'
 
-      - name: Install dependencies
+      - name: Install packages
         run: |
-          pip install --upgrade pip
-          pip install \
-            yfinance \
-            pandas \
-            numpy \
-            ta \
-            requests \
-            scikit-learn \
-            xgboost \
-            lightgbm \
-            catboost \
-            gspread \
-            google-auth
+          pip install gspread google-auth catboost lightgbm ta yfinance scikit-learn xgboost pandas numpy requests
 
-      - name: Run prediction script
-        run: python nestle_predictor.py
+      - name: Run Nestle AI
+        run: python nestle_ai_sheets.py
 
-      - name: Upload log as artifact
-        if: always()   # Ανεβάζει το log ακόμα και αν αποτύχει
+      - name: Upload log
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nestle-log-${{ github.run_number }}
