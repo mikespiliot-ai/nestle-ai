@@ -771,12 +771,40 @@
   const API_URL  = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${CURRENCY}&ids=${COINS.join(',')}&order=market_cap_desc&per_page=20&page=1&sparkline=true&price_change_percentage=24h`;
   const PORTFOLIO_KEY = 'cryptolive_portfolio';
 
+  // Binance symbol map (coinId → Binance pair)
+  const BINANCE_PAIRS = {
+    'bitcoin':      'BTCUSDT',
+    'ethereum':     'ETHUSDT',
+    'binancecoin':  'BNBUSDT',
+    'solana':       'SOLUSDT',
+    'ripple':       'XRPUSDT',
+    'dogecoin':     'DOGEUSDT',
+    'cardano':      'ADAUSDT',
+    'avalanche-2':  'AVAXUSDT',
+    'chainlink':    'LINKUSDT',
+    'tron':         'TRXUSDT',
+    'polkadot':     'DOTUSDT',
+    'shiba-inu':    'SHIBUSDT',
+    'matic-network':'MATICUSDT',
+    'litecoin':     'LTCUSDT',
+    'bitcoin-cash': 'BCHUSDT',
+    'near':         'NEARUSDT',
+    'uniswap':      'UNIUSDT',
+    'usd-coin':     'USDCUSDT',
+  };
+  // Reverse map: Binance symbol → coinId
+  const BINANCE_REV = Object.fromEntries(Object.entries(BINANCE_PAIRS).map(([k,v])=>[v,k]));
+
   let data = [];
   let query = '';
   let fiatRates = {};
   let modalChart = null;
   let currentModalCoinId = null;
   const chartCache = {};
+  let wsInstance = null;
+  let wsReconnectTimer = null;
+  let portRenderTimer = null;
+  let wsConnected = false;
 
   // ── Helpers ──
 
@@ -839,6 +867,7 @@
 
       const card = document.createElement('div');
       card.className = 'hero-card';
+      card.dataset.coinId = coin.id;
       card.innerHTML = `
         <div class="hero-card-top">
           <img src="${coin.image}" alt="${coin.name}" />
@@ -847,8 +876,8 @@
             <div class="hero-card-symbol">${coin.symbol}</div>
           </div>
         </div>
-        <div class="hero-card-price">${SYMBOL}${fmt(coin.current_price)}</div>
-        <div class="hero-card-change ${isUp ? 'up' : 'down'}">${isUp?'+':''}${pct.toFixed(2)}% (24h)</div>
+        <div class="hero-card-price" data-price="${coin.id}">${SYMBOL}${fmt(coin.current_price)}</div>
+        <div class="hero-card-change ${isUp ? 'up' : 'down'}" data-change="${coin.id}">${isUp?'+':''}${pct.toFixed(2)}% (24h)</div>
         <canvas class="hero-spark"></canvas>
       `;
       card.addEventListener('click', () => openModal(coin.id));
@@ -954,6 +983,7 @@
       populateConverter();
       populatePortfolioSelect();
       convert();
+      return true;
     } catch (e) {
       console.error(e);
       if (!data.length) {
@@ -961,6 +991,7 @@
         errEl.style.display = 'block';
         errEl.textContent = 'Αποτυχία φόρτωσης. Ελέγξτε τη σύνδεσή σας.';
       }
+      return false;
     }
   }
 
@@ -1397,6 +1428,98 @@
     currentModalCoinId = null;
   }
 
+  // ── Binance WebSocket (real-time prices) ──
+
+  function updatePriceDOM(coinId, priceEur, pct24h) {
+    const coin = data.find(c => c.id === coinId);
+    if (!coin) return;
+
+    const oldPrice = coin.current_price;
+    coin.current_price = priceEur;
+    coin.price_change_percentage_24h = pct24h;
+
+    const isUp = pct24h >= 0;
+    const changeText = `${isUp ? '+' : ''}${pct24h.toFixed(2)}% (24h)`;
+    const priceText  = `${SYMBOL}${fmt(priceEur)}`;
+    const direction  = priceEur > oldPrice ? 'flash-up' : priceEur < oldPrice ? 'flash-down' : null;
+
+    // Update grid cards
+    const gridCard = document.querySelector(`.card[data-id="${coinId}"]`);
+    if (gridCard) {
+      const priceEl  = gridCard.querySelector('.price');
+      const changeEl = gridCard.querySelector('.change');
+      if (priceEl)  priceEl.textContent = priceText;
+      if (changeEl) { changeEl.textContent = `${isUp ? '+' : ''}${pct24h.toFixed(2)}%`; changeEl.className = `change ${isUp ? 'up' : 'down'}`; }
+      if (direction) {
+        gridCard.classList.remove('flash-up', 'flash-down');
+        void gridCard.offsetWidth;
+        gridCard.classList.add(direction);
+      }
+    }
+
+    // Update hero cards
+    const heroPriceEl  = document.querySelector(`[data-price="${coinId}"]`);
+    const heroChangeEl = document.querySelector(`[data-change="${coinId}"]`);
+    if (heroPriceEl)  heroPriceEl.textContent = priceText;
+    if (heroChangeEl) { heroChangeEl.textContent = changeText; heroChangeEl.className = `hero-card-change ${isUp ? 'up' : 'down'}`; }
+
+    // Update modal if this coin is open
+    if (currentModalCoinId === coinId) {
+      const mp = document.querySelector('.modal-price');
+      const mc = document.querySelector('.modal-price-row .change');
+      if (mp) mp.textContent = priceText;
+      if (mc) { mc.textContent = `${isUp ? '+' : ''}${pct24h.toFixed(2)}% (24h)`; mc.className = `change ${isUp ? 'up' : 'down'}`; }
+    }
+
+    // Debounced portfolio update
+    clearTimeout(portRenderTimer);
+    portRenderTimer = setTimeout(renderPortfolio, 800);
+  }
+
+  function connectBinanceWS() {
+    if (wsInstance) { try { wsInstance.close(); } catch (_) {} }
+
+    const streams = Object.values(BINANCE_PAIRS).map(s => s.toLowerCase() + '@miniTicker').join('/');
+    const url = `wss://stream.binance.com:9443/stream?streams=${streams}`;
+
+    wsInstance = new WebSocket(url);
+
+    wsInstance.onopen = () => {
+      wsConnected = true;
+      const dot = document.querySelector('.live-dot');
+      if (dot) dot.style.background = 'var(--green)';
+    };
+
+    wsInstance.onmessage = (event) => {
+      const msg  = JSON.parse(event.data);
+      const tick = msg.data;
+      if (!tick?.s || !tick?.c || !tick?.o) return;
+
+      const coinId = BINANCE_REV[tick.s];
+      if (!coinId) return;
+
+      const eurRate = fiatRates?.eur?.value;
+      const usdRate = fiatRates?.usd?.value;
+      if (!eurRate || !usdRate) return;
+
+      const eurPerUsd = eurRate / usdRate;
+      const priceUsd  = parseFloat(tick.c);
+      const openUsd   = parseFloat(tick.o);
+      const priceEur  = priceUsd * eurPerUsd;
+      const pct24h    = openUsd > 0 ? ((priceUsd - openUsd) / openUsd) * 100 : 0;
+
+      updatePriceDOM(coinId, priceEur, pct24h);
+    };
+
+    wsInstance.onclose = () => {
+      wsConnected = false;
+      clearTimeout(wsReconnectTimer);
+      wsReconnectTimer = setTimeout(connectBinanceWS, 5000);
+    };
+
+    wsInstance.onerror = () => { wsInstance.close(); };
+  }
+
   document.getElementById('modal-close').addEventListener('click', closeModal);
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
@@ -1419,8 +1542,11 @@
   // ── Init ──
   showSkeletons();
   fetchFiatRates();
-  fetchPrices();
-  setInterval(fetchPrices, 30_000);
+  fetchPrices().then(() => {
+    connectBinanceWS();
+  });
+  // CoinGecko refresh every 5 min (only for market cap, sparklines, etc.)
+  setInterval(fetchPrices, 5 * 60_000);
 
   document.getElementById('refresh-btn').addEventListener('click', fetchPrices);
   document.getElementById('search').addEventListener('input', e => {
