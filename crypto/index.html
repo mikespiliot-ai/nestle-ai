@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto Live Prices | Real-time Updates</title>
+  <meta name="description" content="Παρακολουθήστε τιμές crypto σε πραγματικό χρόνο. Bitcoin, Ethereum και 18 ακόμα νομίσματα σε EUR." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --red: #f85149;
+      --accent: #58a6ff;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    header { text-align: center; margin-bottom: 2.5rem; }
+    header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; }
+    header h1 span { color: var(--accent); }
+
+    .meta { margin-top: 0.5rem; font-size: 0.85rem; color: var(--muted); }
+
+    #refresh-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--accent);
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+      transition: background 0.15s;
+    }
+    #refresh-btn:hover { background: var(--surface); }
+
+    .search-wrap { max-width: 900px; margin: 0 auto 1.5rem; }
+    #search {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    #search::placeholder { color: var(--muted); }
+    #search:focus { border-color: var(--accent); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+    .card-top { display: flex; align-items: center; gap: 0.75rem; }
+    .card-top img { width: 36px; height: 36px; border-radius: 50%; }
+    .coin-name { font-weight: 600; font-size: 1rem; }
+    .coin-symbol { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; }
+    .price { font-size: 1.35rem; font-weight: 700; }
+
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .change { font-weight: 600; font-size: 0.9rem; }
+    .change.up { color: var(--green); }
+    .change.down { color: var(--red); }
+
+    .sparkline-wrap { margin-top: 0.5rem; }
+    canvas.spark { width: 100%; height: 48px; display: block; }
+
+    .skeleton { animation: pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .skeleton .price, .skeleton .coin-name, .skeleton .coin-symbol {
+      background: var(--border); border-radius: 4px; color: transparent; user-select: none;
+    }
+
+    .error-msg { text-align: center; color: var(--red); margin-top: 3rem; font-size: 1rem; }
+
+    footer { text-align: center; margin-top: 3rem; font-size: 0.78rem; color: var(--muted); }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    @keyframes flash-green { 0%,100% { background: transparent; } 50% { background: rgba(63,185,80,0.12); } }
+    @keyframes flash-red   { 0%,100% { background: transparent; } 50% { background: rgba(248,81,73,0.12); } }
+    .flash-up   { animation: flash-green 0.6s ease; }
+    .flash-down { animation: flash-red   0.6s ease; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Crypto <span>Live</span> Prices</h1>
+  <p class="meta">
+    Ενημέρωση κάθε 30 δευτερόλεπτα &nbsp;|&nbsp; Δεδομένα: CoinGecko
+    <button id="refresh-btn">Ανανέωση</button>
+  </p>
+</header>
+
+<div class="search-wrap">
+  <input id="search" type="search" placeholder="Αναζήτηση νομίσματος..." autocomplete="off" />
+</div>
+
+<div class="grid" id="grid"></div>
+<div id="error" class="error-msg" style="display:none"></div>
+
+<footer>
+  Powered by <a href="https://www.coingecko.com" target="_blank" rel="noopener">CoinGecko</a> Free API
+</footer>
+
+<script>
+  const COINS = [
+    'bitcoin','ethereum','tether','binancecoin','solana',
+    'ripple','usd-coin','staked-ether','dogecoin','cardano',
+    'avalanche-2','chainlink','tron','polkadot','shiba-inu',
+    'matic-network','litecoin','bitcoin-cash','near','uniswap'
+  ];
+
+  const CURRENCY = 'eur';
+  const SYMBOL   = '€';
+  const API_URL  = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${CURRENCY}&ids=${COINS.join(',')}&order=market_cap_desc&per_page=20&page=1&sparkline=true&price_change_percentage=24h`;
+
+  let data = [];
+  let query = '';
+
+  function fmt(n) {
+    if (n >= 1000) return n.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if (n >= 1)    return n.toLocaleString('el-GR', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+    return n.toLocaleString('el-GR', { minimumFractionDigits: 4, maximumFractionDigits: 8 });
+  }
+
+  function fmtMktCap(n) {
+    if (n >= 1e12) return (n/1e12).toFixed(2) + 'T';
+    if (n >= 1e9)  return (n/1e9).toFixed(2) + 'B';
+    if (n >= 1e6)  return (n/1e6).toFixed(2) + 'M';
+    return n.toFixed(0);
+  }
+
+  function drawSparkline(canvas, prices, isUp) {
+    const ctx = canvas.getContext('2d');
+    const W = canvas.offsetWidth || 220;
+    const H = 48;
+    canvas.width  = W * devicePixelRatio;
+    canvas.height = H * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+    const range = max - min || 1;
+    const step  = W / (prices.length - 1);
+
+    ctx.beginPath();
+    prices.forEach((p, i) => {
+      const x = i * step;
+      const y = H - ((p - min) / range) * (H - 6) - 3;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+
+    ctx.strokeStyle = isUp ? '#3fb950' : '#f85149';
+    ctx.lineWidth   = 1.5;
+    ctx.stroke();
+
+    ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, isUp ? 'rgba(63,185,80,0.18)' : 'rgba(248,81,73,0.18)');
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  const grid  = document.getElementById('grid');
+  const errEl = document.getElementById('error');
+
+  function render() {
+    const filtered = data.filter(c =>
+      c.name.toLowerCase().includes(query) ||
+      c.symbol.toLowerCase().includes(query)
+    );
+
+    if (!filtered.length && data.length) {
+      grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center">Δεν βρέθηκαν αποτελέσματα.</p>';
+      return;
+    }
+
+    const existing = {};
+    grid.querySelectorAll('.card[data-id]').forEach(c => { existing[c.dataset.id] = c; });
+
+    const fragment = document.createDocumentFragment();
+
+    filtered.forEach(coin => {
+      const pct    = coin.price_change_percentage_24h ?? 0;
+      const isUp   = pct >= 0;
+      const change = (isUp ? '+' : '') + pct.toFixed(2) + '%';
+      const prices = coin.sparkline_in_7d?.price ?? [];
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.id = coin.id;
+
+      card.innerHTML = `
+        <div class="card-top">
+          <img src="${coin.image}" alt="${coin.name}" loading="lazy" />
+          <div>
+            <div class="coin-name">${coin.name}</div>
+            <div class="coin-symbol">${coin.symbol}</div>
+          </div>
+          <div class="change ${isUp ? 'up' : 'down'}" style="margin-left:auto">${change}</div>
+        </div>
+        <div class="price">${SYMBOL}${fmt(coin.current_price)}</div>
+        <div class="card-bottom">
+          <span>Κεφ/ση: ${SYMBOL}${fmtMktCap(coin.market_cap)}</span>
+          <span>24h Όγκος: ${SYMBOL}${fmtMktCap(coin.total_volume)}</span>
+        </div>
+        <div class="sparkline-wrap"><canvas class="spark"></canvas></div>
+      `;
+
+      if (existing[coin.id]) {
+        const oldPrice = parseFloat(existing[coin.id].querySelector('.price').textContent.replace(/[^0-9.,]/g,'').replace(',','.'));
+        if (!isNaN(oldPrice) && Math.abs(oldPrice - coin.current_price) > 0) {
+          card.classList.add(coin.current_price > oldPrice ? 'flash-up' : 'flash-down');
+        }
+      }
+
+      fragment.appendChild(card);
+
+      requestAnimationFrame(() => {
+        const canvas = card.querySelector('canvas.spark');
+        if (prices.length > 1) drawSparkline(canvas, prices, isUp);
+      });
+    });
+
+    grid.innerHTML = '';
+    grid.appendChild(fragment);
+  }
+
+  function showSkeletons() {
+    grid.innerHTML = Array.from({ length: 8 }, () => `
+      <div class="card skeleton">
+        <div class="card-top">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--border)"></div>
+          <div>
+            <div class="coin-name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <div class="coin-symbol">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+          </div>
+        </div>
+        <div class="price">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+      </div>
+    `).join('');
+  }
+
+  async function fetchPrices() {
+    errEl.style.display = 'none';
+    try {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      data = await res.json();
+      render();
+    } catch (e) {
+      console.error(e);
+      if (!data.length) {
+        grid.innerHTML = '';
+        errEl.style.display = 'block';
+        errEl.textContent = 'Αποτυχία φόρτωσης δεδομένων. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.';
+      }
+    }
+  }
+
+  showSkeletons();
+  fetchPrices();
+  setInterval(fetchPrices, 30_000);
+
+  document.getElementById('refresh-btn').addEventListener('click', fetchPrices);
+  document.getElementById('search').addEventListener('input', e => {
+    query = e.target.value.trim().toLowerCase();
+    if (data.length) render();
+  });
+</script>
+</body>
+</html>
