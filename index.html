@@ -768,7 +768,8 @@
 
   const CURRENCY = 'eur';
   const SYMBOL   = '€';
-  const API_URL  = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${CURRENCY}&ids=${COINS.join(',')}&order=market_cap_desc&per_page=20&page=1&sparkline=true&price_change_percentage=24h`;
+  const API_URL       = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${CURRENCY}&ids=${COINS.join(',')}&order=market_cap_desc&per_page=20&page=1&sparkline=true&price_change_percentage=24h`;
+  const API_PRICE_URL = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${CURRENCY}&ids=${COINS.join(',')}&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=24h`;
   const PORTFOLIO_KEY = 'cryptolive_portfolio';
 
   // Binance symbol map (coinId → Binance pair)
@@ -805,6 +806,7 @@
   let wsReconnectTimer = null;
   let portRenderTimer = null;
   let wsConnected = false;
+  let wsFailed = false;
 
   // ── Helpers ──
 
@@ -1486,6 +1488,7 @@
 
     wsInstance.onopen = () => {
       wsConnected = true;
+      wsFailed = false;
       const dot = document.querySelector('.live-dot');
       if (dot) dot.style.background = 'var(--green)';
     };
@@ -1513,11 +1516,28 @@
 
     wsInstance.onclose = () => {
       wsConnected = false;
+      // After 3 failed attempts, switch to polling fallback
+      wsFailed = true;
       clearTimeout(wsReconnectTimer);
-      wsReconnectTimer = setTimeout(connectBinanceWS, 5000);
+      wsReconnectTimer = setTimeout(connectBinanceWS, 8000);
     };
 
     wsInstance.onerror = () => { wsInstance.close(); };
+  }
+
+  // ── Fallback: fast price polling when WebSocket unavailable ──
+  async function fetchPricesOnly() {
+    if (wsConnected || !data.length) return;
+    try {
+      const res = await fetch(API_PRICE_URL);
+      if (!res.ok) return;
+      const fresh = await res.json();
+      fresh.forEach(coin => {
+        const existing = data.find(c => c.id === coin.id);
+        if (!existing) return;
+        updatePriceDOM(coin.id, coin.current_price, coin.price_change_percentage_24h ?? 0);
+      });
+    } catch (_) {}
   }
 
   document.getElementById('modal-close').addEventListener('click', closeModal);
@@ -1545,8 +1565,10 @@
   fetchPrices().then(() => {
     connectBinanceWS();
   });
-  // CoinGecko refresh every 5 min (only for market cap, sparklines, etc.)
+  // Full refresh (sparklines, market cap) every 5 min
   setInterval(fetchPrices, 5 * 60_000);
+  // Fallback price poll every 15s if WebSocket is not connected
+  setInterval(fetchPricesOnly, 15_000);
 
   document.getElementById('refresh-btn').addEventListener('click', fetchPrices);
   document.getElementById('search').addEventListener('input', e => {
