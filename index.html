@@ -776,6 +776,7 @@
   let fiatRates = {};
   let modalChart = null;
   let currentModalCoinId = null;
+  const chartCache = {};
 
   // ── Helpers ──
 
@@ -1199,104 +1200,134 @@
   const overlay   = document.getElementById('modal-overlay');
   const modalBody = document.getElementById('modal-body');
 
+  function renderChartData(wrap, rawPrices, days) {
+    wrap.innerHTML = '<canvas id="modal-chart-canvas"></canvas>';
+    const canvas = document.getElementById('modal-chart-canvas');
+    canvas.style.height = '220px';
+    if (modalChart) { modalChart.destroy(); modalChart = null; }
+    const ctx2 = canvas.getContext('2d');
+    const daysNum = days === 'max' ? Infinity : Number(days);
+    const priceValues = rawPrices.map(p => p[1]);
+    const labels = rawPrices.map(p => {
+      const d = new Date(p[0]);
+      if (daysNum <= 1)   return d.toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit' });
+      if (daysNum <= 10)  return d.toLocaleDateString('el-GR', { weekday: 'short', day: 'numeric', month: 'short' });
+      if (daysNum <= 180) return d.toLocaleDateString('el-GR', { day: 'numeric', month: 'short' });
+      return d.toLocaleDateString('el-GR', { month: 'short', year: 'numeric' });
+    });
+    const first = priceValues[0], last = priceValues[priceValues.length - 1];
+    const isUp  = last >= first;
+    const color = isUp ? '#3fb950' : '#f85149';
+    const grad  = ctx2.createLinearGradient(0, 0, 0, 220);
+    grad.addColorStop(0, isUp ? 'rgba(63,185,80,0.28)' : 'rgba(248,81,73,0.28)');
+    grad.addColorStop(1, 'rgba(13,17,23,0)');
+    modalChart = new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data: priceValues,
+          borderColor: color,
+          backgroundColor: grad,
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: color,
+          pointHoverBorderColor: '#0d1117',
+          pointHoverBorderWidth: 2,
+          tension: 0.3,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { intersect: false, mode: 'index' },
+        animation: { duration: 400 },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1c2128',
+            borderColor: '#30363d',
+            borderWidth: 1,
+            titleColor: '#8b949e',
+            bodyColor: '#e6edf3',
+            padding: 10,
+            callbacks: { label: ctx => ' €' + fmt(ctx.raw) }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            ticks: { color: '#8b949e', maxTicksLimit: 7, font: { size: 11 } },
+            border: { color: 'transparent' }
+          },
+          y: {
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            ticks: { color: '#8b949e', callback: v => '€' + fmt(v), font: { size: 11 } },
+            position: 'right',
+            border: { color: 'transparent' }
+          }
+        }
+      }
+    });
+  }
+
   async function loadModalChart(coinId, days) {
     const wrap = document.getElementById('chart-canvas-wrap');
     if (!wrap) return;
 
-    wrap.innerHTML = '<div class="chart-loading">Φόρτωση γραφήματος...</div>';
-
-    // Update active period button
     document.querySelectorAll('.period-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.days === String(days));
     });
 
-    try {
-      const res  = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=eur&days=${days}`);
-      if (!res.ok) throw new Error();
-      const json = await res.json();
-      const rawPrices = json.prices;
+    const cacheKey = `${coinId}:${days}`;
 
-      wrap.innerHTML = '<canvas id="modal-chart-canvas"></canvas>';
-      const canvas = document.getElementById('modal-chart-canvas');
-      canvas.style.height = '220px';
-
-      if (modalChart) { modalChart.destroy(); modalChart = null; }
-
-      const ctx2 = canvas.getContext('2d');
-
-      const daysNum = days === 'max' ? Infinity : Number(days);
-      const priceValues = rawPrices.map(p => p[1]);
-      const labels = rawPrices.map(p => {
-        const d = new Date(p[0]);
-        if (daysNum <= 1)  return d.toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit' });
-        if (daysNum <= 10) return d.toLocaleDateString('el-GR', { weekday: 'short', day: 'numeric', month: 'short' });
-        if (daysNum <= 180) return d.toLocaleDateString('el-GR', { day: 'numeric', month: 'short' });
-        return d.toLocaleDateString('el-GR', { month: 'short', year: 'numeric' });
-      });
-
-      const first  = priceValues[0];
-      const last   = priceValues[priceValues.length - 1];
-      const isUp   = last >= first;
-      const color  = isUp ? '#3fb950' : '#f85149';
-
-      const grad = ctx2.createLinearGradient(0, 0, 0, 220);
-      grad.addColorStop(0, isUp ? 'rgba(63,185,80,0.28)' : 'rgba(248,81,73,0.28)');
-      grad.addColorStop(1, 'rgba(13,17,23,0)');
-
-      modalChart = new Chart(ctx2, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            data: priceValues,
-            borderColor: color,
-            backgroundColor: grad,
-            borderWidth: 2,
-            pointRadius: 0,
-            pointHoverRadius: 5,
-            pointHoverBackgroundColor: color,
-            pointHoverBorderColor: '#0d1117',
-            pointHoverBorderWidth: 2,
-            tension: 0.3,
-            fill: true,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: { intersect: false, mode: 'index' },
-          animation: { duration: 400 },
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: '#1c2128',
-              borderColor: '#30363d',
-              borderWidth: 1,
-              titleColor: '#8b949e',
-              bodyColor: '#e6edf3',
-              padding: 10,
-              callbacks: {
-                label: ctx => ' €' + fmt(ctx.raw),
-              }
-            }
-          },
-          scales: {
-            x: {
-              grid: { color: 'rgba(255,255,255,0.04)' },
-              ticks: { color: '#8b949e', maxTicksLimit: 7, font: { size: 11 } },
-              border: { color: 'transparent' }
-            },
-            y: {
-              grid: { color: 'rgba(255,255,255,0.04)' },
-              ticks: { color: '#8b949e', callback: v => '€' + fmt(v), font: { size: 11 } },
-              position: 'right',
-              border: { color: 'transparent' }
-            }
-          }
+    // Use already-fetched sparkline data for 7D (no API call needed)
+    if (days === 7) {
+      if (!chartCache[cacheKey]) {
+        const coin = data.find(c => c.id === coinId);
+        const prices = coin?.sparkline_in_7d?.price ?? [];
+        if (prices.length > 1) {
+          const now  = Date.now();
+          const step = (7 * 24 * 3600 * 1000) / prices.length;
+          chartCache[cacheKey] = prices.map((p, i) => [now - (prices.length - 1 - i) * step, p]);
         }
-      });
-    } catch {
-      wrap.innerHTML = '<div class="chart-loading" style="color:var(--red)">Αδύνατη φόρτωση γραφήματος</div>';
+      }
+      if (chartCache[cacheKey]) {
+        renderChartData(wrap, chartCache[cacheKey], days);
+        return;
+      }
+    }
+
+    // Serve from cache if available
+    if (chartCache[cacheKey]) {
+      renderChartData(wrap, chartCache[cacheKey], days);
+      return;
+    }
+
+    wrap.innerHTML = '<div class="chart-loading">Φόρτωση γραφήματος...</div>';
+
+    try {
+      const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=eur&days=${days}`);
+      if (res.status === 429) throw new Error('rate');
+      if (!res.ok) throw new Error('err');
+      const json = await res.json();
+      chartCache[cacheKey] = json.prices;
+      renderChartData(wrap, json.prices, days);
+    } catch (e) {
+      const msg = e.message === 'rate'
+        ? 'Πολλές αιτήσεις API. Περιμένετε λίγο και δοκιμάστε ξανά.'
+        : 'Αδύνατη φόρτωση γραφήματος.';
+      const dArg = days === 'max' ? "'max'" : days;
+      wrap.innerHTML = `
+        <div class="chart-loading" style="flex-direction:column;gap:0.75rem">
+          <span style="color:var(--red)">${msg}</span>
+          <button onclick="loadModalChart('${coinId}',${dArg})"
+            style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:0.4rem 1rem;border-radius:6px;cursor:pointer;font-size:0.85rem">
+            ↻ Δοκιμή ξανά
+          </button>
+        </div>`;
     }
   }
 
@@ -1321,8 +1352,9 @@
       </div>
       <div class="modal-chart-wrap">
         <div class="chart-periods">
-          <button class="period-btn active" data-days="1">1D</button>
+          <button class="period-btn" data-days="1">1D</button>
           <button class="period-btn" data-days="5">5D</button>
+          <button class="period-btn active" data-days="7">7D</button>
           <button class="period-btn" data-days="30">1M</button>
           <button class="period-btn" data-days="180">6M</button>
           <button class="period-btn" data-days="365">1Y</button>
@@ -1355,25 +1387,7 @@
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
 
-    loadModalChart(coinId, 1);
-    fetchModalDescription(coin);
-  }
-
-  async function fetchModalDescription(coin) {
-    try {
-      const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coin.id}?localization=false&tickers=false&community_data=false&developer_data=false`);
-      if (!res.ok) return;
-      const detail = await res.json();
-      const statsEl = document.getElementById('modal-stats');
-      if (!statsEl) return;
-      const desc = detail.description?.en?.split('. ').slice(0,2).join('. ');
-      if (desc) {
-        const box = document.createElement('div');
-        box.style.cssText = 'grid-column:1/-1;background:var(--bg);border-radius:10px;padding:0.9rem 1rem;';
-        box.innerHTML = `<div class="stat-label" style="margin-bottom:0.4rem">Περιγραφή</div><div style="font-size:0.85rem;color:var(--muted);line-height:1.6">${desc}.</div>`;
-        statsEl.appendChild(box);
-      }
-    } catch (_) {}
+    loadModalChart(coinId, 7);
   }
 
   function closeModal() {
