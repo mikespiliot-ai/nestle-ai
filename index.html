@@ -238,21 +238,19 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 .page.active { display:block; }
 .page.p-exit {
   display:block;pointer-events:none;
-  animation:page3d-exit 0.65s cubic-bezier(0.4,0,0.6,1) forwards;
+  animation:page-exit 0.38s cubic-bezier(0.4,0,1,1) forwards;
 }
 .page.p-enter {
   display:block;
-  animation:page3d-enter 0.65s cubic-bezier(0.16,1,0.3,1) forwards;
+  animation:page-enter 0.42s cubic-bezier(0,0,0.2,1) forwards;
 }
-@keyframes page3d-exit {
-  0%   { opacity:1; transform:perspective(1400px) rotateY(0deg) rotateX(0deg) scale(1) translateX(0) translateZ(0); filter:blur(0px); }
-  40%  { opacity:0.6; transform:perspective(1400px) rotateY(-20deg) rotateX(3deg) scale(0.95) translateX(-3%) translateZ(-60px); filter:blur(2px); }
-  100% { opacity:0; transform:perspective(1400px) rotateY(-55deg) rotateX(6deg) scale(0.82) translateX(-10%) translateZ(-180px); filter:blur(8px); }
+@keyframes page-exit {
+  0%   { opacity:1; transform:translateY(0) scale(1); }
+  100% { opacity:0; transform:translateY(-28px) scale(0.96); }
 }
-@keyframes page3d-enter {
-  0%   { opacity:0; transform:perspective(1400px) rotateY(55deg) rotateX(-6deg) scale(0.82) translateX(10%) translateZ(-180px); filter:blur(8px); }
-  55%  { opacity:0.8; transform:perspective(1400px) rotateY(10deg) rotateX(-1deg) scale(0.97) translateX(1%) translateZ(-20px); filter:blur(1px); }
-  100% { opacity:1; transform:perspective(1400px) rotateY(0deg) rotateX(0deg) scale(1) translateX(0) translateZ(0); filter:blur(0px); }
+@keyframes page-enter {
+  0%   { opacity:0; transform:translateY(32px) scale(0.97); }
+  100% { opacity:1; transform:translateY(0) scale(1); }
 }
 
 /* ===== STATS BAR ===== */
@@ -838,7 +836,7 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
     <div class="page-title">Μετατροπέας Νομισμάτων</div>
     <div class="page-subtitle">Μετατρέψτε μεταξύ κρυπτονομισμάτων και fiat σε πραγματικό χρόνο</div>
     <div class="converter-wrap">
-      <div class="converter-card reveal">
+      <div class="converter-card">
         <div class="conv-group">
           <label class="conv-label">Από</label>
           <div class="conv-row">
@@ -1179,25 +1177,32 @@ function showPage(name) {
 
   closeMenuOverlay();
 
-  // 3D transition
+  // Transition: exit current
   if (current) {
     current.classList.add('p-exit');
     current.classList.remove('active');
-    setTimeout(() => current.classList.remove('p-exit'), 500);
+    setTimeout(() => current.classList.remove('p-exit'), 400);
   }
 
-  next.classList.add('active', 'p-enter');
-  setTimeout(() => next.classList.remove('p-enter'), 500);
+  // Enter next after a tiny overlap
+  setTimeout(() => {
+    next.classList.add('active', 'p-enter');
+    setTimeout(() => next.classList.remove('p-enter'), 450);
+  }, 120);
 
   currentPage = name;
 
-  if (name === 'trending') loadTrendingPage();
-  if (name === 'gainers') renderGainersLosers();
-  if (name === 'portfolio') renderHoldings();
-  if (name === 'converter') initConverter();
-  if (name === 'market') renderMarketGrid();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  initScrollReveal();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+
+  // Load data & reveal after animation settles
+  setTimeout(() => {
+    if (name === 'trending') loadTrendingPage();
+    if (name === 'gainers') renderGainersLosers();
+    if (name === 'portfolio') renderHoldings();
+    if (name === 'converter') initConverter();
+    if (name === 'market') renderMarketGrid();
+    initScrollReveal();
+  }, 200);
 }
 
 // ===================== RIPPLE =====================
