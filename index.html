@@ -176,7 +176,8 @@ nav {
 .menu-overlay {
   position:fixed;inset:0;z-index:950;
   background:rgba(4,7,15,0.97);backdrop-filter:blur(30px);
-  display:flex;align-items:center;justify-content:center;
+  display:flex;align-items:flex-start;justify-content:center;
+  overflow-y:auto;
   opacity:0;pointer-events:none;transition:opacity 0.4s ease;
 }
 .menu-overlay.open { opacity:1;pointer-events:all; }
@@ -191,18 +192,18 @@ nav {
 }
 .menu-overlay-close:hover { background:rgba(255,61,87,0.12);border-color:var(--red);color:var(--red);transform:rotate(90deg); }
 
-.menu-overlay-inner { text-align:center; }
-.menu-overlay-tagline { font-size:12px;font-weight:600;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:64px;opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s ease; }
+.menu-overlay-inner { text-align:center;width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 48px; }
+.menu-overlay-tagline { font-size:12px;font-weight:600;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:32px;opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s ease; }
 .menu-overlay.open .menu-overlay-tagline { opacity:1;transform:translateY(0);transition-delay:0.05s; }
 
 .menu-overlay-links { display:flex;flex-direction:column;align-items:center;gap:4px; }
 
 .mol-link {
   font-family:'Space Grotesk',sans-serif;
-  font-size:clamp(36px,6.5vw,76px);font-weight:800;
+  font-size:clamp(28px,5vw,64px);font-weight:800;
   color:var(--muted);background:none;border:none;cursor:pointer;
-  display:flex;align-items:center;gap:28px;letter-spacing:-2px;
-  padding:8px 40px;border-radius:16px;
+  display:flex;align-items:center;gap:24px;letter-spacing:-1px;
+  padding:4px 32px;border-radius:16px;
   opacity:0;transform:translateY(70px) skewY(3deg);
   transition:opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1), color 0.2s;
   white-space:nowrap;position:relative;overflow:hidden;
@@ -763,15 +764,15 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 
   <!-- MARKET PAGE -->
   <div id="page-market" class="page">
-    <div class="page-title">Αγορά Κρυπτονομισμάτων</div>
-    <div class="page-subtitle">Τιμές και στατιστικά για τα 20 κορυφαία νομίσματα</div>
+    <div class="page-title" data-i18n="mkt_title">Αγορά Κρυπτονομισμάτων</div>
+    <div class="page-subtitle" data-i18n="mkt_subtitle">Τιμές και στατιστικά για τα 20 κορυφαία νομίσματα</div>
     <div class="search-sort-bar">
-      <input type="text" class="search-input" id="market-search" placeholder="Αναζήτηση νομίσματος..." oninput="filterMarket()">
+      <input type="text" class="search-input" id="market-search" placeholder="Αναζήτηση νομίσματος..." data-i18n-ph="mkt_search_ph" oninput="filterMarket()">
       <div class="sort-btns">
-        <button class="sort-btn active" data-sort="market_cap" onclick="setSortBy('market_cap',this)">Κεφαλαιοποίηση</button>
-        <button class="sort-btn" data-sort="price" onclick="setSortBy('price',this)">Τιμή</button>
-        <button class="sort-btn" data-sort="change" onclick="setSortBy('change',this)">24h%</button>
-        <button class="sort-btn" data-sort="volume" onclick="setSortBy('volume',this)">Όγκος</button>
+        <button class="sort-btn active" data-sort="market_cap" onclick="setSortBy('market_cap',this)" data-i18n="sort_cap">Κεφαλαιοποίηση</button>
+        <button class="sort-btn" data-sort="price" onclick="setSortBy('price',this)" data-i18n="sort_price">Τιμή</button>
+        <button class="sort-btn" data-sort="change" onclick="setSortBy('change',this)" data-i18n="sort_change">24h%</button>
+        <button class="sort-btn" data-sort="volume" onclick="setSortBy('volume',this)" data-i18n="sort_volume">Όγκος</button>
       </div>
     </div>
     <div class="market-grid" id="market-grid">
@@ -782,8 +783,8 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 
   <!-- TRENDING PAGE -->
   <div id="page-trending" class="page">
-    <div class="page-title">🔥 Trending Νομίσματα</div>
-    <div class="page-subtitle">Τα πιο δημοφιλή κρυπτονομίσματα αυτή τη στιγμή</div>
+    <div class="page-title" data-i18n="trend_title">🔥 Trending Νομίσματα</div>
+    <div class="page-subtitle" data-i18n="trend_subtitle">Τα πιο δημοφιλή κρυπτονομίσματα αυτή τη στιγμή</div>
     <div class="trending-grid" id="trending-grid">
       <div class="skeleton-card" style="height:160px;border-radius:20px;padding:0;border:none;"></div>
       <div class="skeleton-card" style="height:160px;border-radius:20px;padding:0;border:none;"></div>
@@ -793,22 +794,22 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 
   <!-- GAINERS/LOSERS PAGE -->
   <div id="page-gainers" class="page">
-    <div class="page-title">Κερδισμένοι &amp; Χαμένοι</div>
-    <div class="page-subtitle">Οι μεγαλύτερες κινήσεις των τελευταίων 24 ωρών</div>
+    <div class="page-title" data-i18n="gl_title">Κερδισμένοι &amp; Χαμένοι</div>
+    <div class="page-subtitle" data-i18n="gl_subtitle">Οι μεγαλύτερες κινήσεις των τελευταίων 24 ωρών</div>
     <div class="gl-grid">
       <div class="gl-column">
         <div class="gl-header">
           <span style="font-size:22px;">📈</span>
-          <div class="gl-header-title green">Top 8 Κερδισμένοι</div>
+          <div class="gl-header-title green" data-i18n="gl_gainers_hdr">Top 8 Κερδισμένοι</div>
         </div>
-        <div class="gl-list" id="gainers-list"><div style="color:var(--muted);font-size:13px;padding:16px;">Φόρτωση...</div></div>
+        <div class="gl-list" id="gainers-list"><div style="color:var(--muted);font-size:13px;padding:16px;" data-i18n="loading">Φόρτωση...</div></div>
       </div>
       <div class="gl-column">
         <div class="gl-header">
           <span style="font-size:22px;">📉</span>
-          <div class="gl-header-title red">Top 8 Χαμένοι</div>
+          <div class="gl-header-title red" data-i18n="gl_losers_hdr">Top 8 Χαμένοι</div>
         </div>
-        <div class="gl-list" id="losers-list"><div style="color:var(--muted);font-size:13px;padding:16px;">Φόρτωση...</div></div>
+        <div class="gl-list" id="losers-list"><div style="color:var(--muted);font-size:13px;padding:16px;" data-i18n="loading">Φόρτωση...</div></div>
       </div>
     </div>
   </div>
@@ -817,61 +818,61 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
   <div id="page-portfolio" class="page">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;">
       <div>
-        <div class="page-title">Χαρτοφυλάκιο</div>
-        <div class="page-subtitle" style="margin-bottom:0;">Παρακολούθηση επενδύσεών σας</div>
+        <div class="page-title" data-i18n="port_title">Χαρτοφυλάκιο</div>
+        <div class="page-subtitle" style="margin-bottom:0;" data-i18n="port_subtitle">Παρακολούθηση επενδύσεών σας</div>
       </div>
-      <div class="sync-indicator" id="sync-indicator">✓ Συγχρονισμένο</div>
+      <div class="sync-indicator" id="sync-indicator" data-i18n="synced">✓ Συγχρονισμένο</div>
     </div>
 
     <div class="portfolio-top">
       <div class="portfolio-form">
-        <div class="form-title">➕ Προσθήκη Θέσης</div>
+        <div class="form-title" data-i18n="add_position">➕ Προσθήκη Θέσης</div>
         <div class="form-group">
-          <label class="form-label">Νόμισμα</label>
+          <label class="form-label" data-i18n="form_coin">Νόμισμα</label>
           <select class="form-select" id="p-coin-select"><option>Φόρτωση...</option></select>
         </div>
         <div class="form-group">
-          <label class="form-label">Ποσότητα</label>
-          <input type="number" class="form-input" id="p-amount" placeholder="πχ. 0.5" min="0" step="any">
+          <label class="form-label" data-i18n="form_amount">Ποσότητα</label>
+          <input type="number" class="form-input" id="p-amount" placeholder="πχ. 0.5" data-i18n-ph="form_ph_amount" min="0" step="any">
         </div>
         <div class="form-group">
-          <label class="form-label">Τιμή Αγοράς (€)</label>
-          <input type="number" class="form-input" id="p-buy-price" placeholder="πχ. 30000" min="0" step="any">
+          <label class="form-label" data-i18n="form_buy_price">Τιμή Αγοράς (€)</label>
+          <input type="number" class="form-input" id="p-buy-price" placeholder="πχ. 30000" data-i18n-ph="form_ph_price" min="0" step="any">
         </div>
-        <button class="btn-add" id="btn-add-holding" onclick="addHolding()">Προσθήκη στο Χαρτοφυλάκιο</button>
+        <button class="btn-add" id="btn-add-holding" onclick="addHolding()" data-i18n="btn_add">Προσθήκη στο Χαρτοφυλάκιο</button>
       </div>
 
       <div class="portfolio-chart-wrap">
-        <div class="panel-title" style="margin-bottom:0;">Κατανομή Χαρτοφυλακίου</div>
+        <div class="panel-title" style="margin-bottom:0;" data-i18n="chart_dist">Κατανομή Χαρτοφυλακίου</div>
         <canvas id="portfolio-chart"></canvas>
-        <div id="portfolio-chart-legend" style="font-size:12px;color:var(--muted2);text-align:center;max-width:100%;">Προσθέστε νομίσματα για να δείτε τη διανομή</div>
+        <div id="portfolio-chart-legend" style="font-size:12px;color:var(--muted2);text-align:center;max-width:100%;" data-i18n="chart_add_coins">Προσθέστε νομίσματα για να δείτε τη διανομή</div>
       </div>
     </div>
 
     <div class="portfolio-holdings">
       <div class="holdings-header">
-        <div class="holdings-title">Οι Θέσεις Μου</div>
+        <div class="holdings-title" data-i18n="my_positions">Οι Θέσεις Μου</div>
       </div>
       <div class="holdings-list" id="holdings-list">
         <div class="empty-state">
           <div class="es-icon">📭</div>
-          <div class="es-text">Δεν έχετε θέσεις ακόμη</div>
-          <div class="es-sub">Προσθέστε το πρώτο σας νόμισμα από τη φόρμα</div>
+          <div class="es-text" data-i18n="empty_port">Δεν έχετε θέσεις ακόμη</div>
+          <div class="es-sub" data-i18n="empty_port_sub">Προσθέστε το πρώτο σας νόμισμα από τη φόρμα</div>
         </div>
       </div>
     </div>
 
     <div class="portfolio-footer">
       <div class="footer-stat">
-        <div class="footer-stat-label">Συνολική Αξία</div>
+        <div class="footer-stat-label" data-i18n="total_value_label">Συνολική Αξία</div>
         <div class="footer-stat-value grad-text" id="total-value">€0,00</div>
       </div>
       <div class="footer-stat">
-        <div class="footer-stat-label">Συνολικό P&amp;L</div>
+        <div class="footer-stat-label" data-i18n="total_pnl_label">Συνολικό P&amp;L</div>
         <div class="footer-stat-value" id="total-pnl" style="color:var(--muted2);">€0,00</div>
       </div>
       <div class="footer-stat">
-        <div class="footer-stat-label">Θέσεις</div>
+        <div class="footer-stat-label" data-i18n="positions_label">Θέσεις</div>
         <div class="footer-stat-value grad-text" id="total-positions">0</div>
       </div>
     </div>
@@ -879,12 +880,12 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 
   <!-- CONVERTER PAGE -->
   <div id="page-converter" class="page">
-    <div class="page-title">Μετατροπέας Νομισμάτων</div>
-    <div class="page-subtitle">Μετατρέψτε μεταξύ κρυπτονομισμάτων και fiat σε πραγματικό χρόνο</div>
+    <div class="page-title" data-i18n="conv_title">Μετατροπέας Νομισμάτων</div>
+    <div class="page-subtitle" data-i18n="conv_subtitle">Μετατρέψτε μεταξύ κρυπτονομισμάτων και fiat σε πραγματικό χρόνο</div>
     <div class="converter-wrap">
       <div class="converter-card">
         <div class="conv-group">
-          <label class="conv-label">Από</label>
+          <label class="conv-label" data-i18n="conv_from_label">Από</label>
           <div class="conv-row">
             <input type="number" class="conv-input" id="conv-from-amount" placeholder="1" value="1" oninput="convertCurrency()">
             <select class="conv-select" id="conv-from" onchange="convertCurrency()"></select>
@@ -892,14 +893,14 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
         </div>
         <button class="swap-btn" onclick="swapConverter()" title="Εναλλαγή">⇅</button>
         <div class="conv-group">
-          <label class="conv-label">Προς</label>
+          <label class="conv-label" data-i18n="conv_to_label">Προς</label>
           <div class="conv-row">
             <input type="number" class="conv-input" id="conv-to-amount" placeholder="—" readonly style="opacity:0.7;">
             <select class="conv-select" id="conv-to" onchange="convertCurrency()"></select>
           </div>
         </div>
         <div class="conv-result">
-          <div class="conv-result-label" id="conv-result-label">Αποτέλεσμα</div>
+          <div class="conv-result-label" id="conv-result-label" data-i18n="conv_result_label">Αποτέλεσμα</div>
           <div class="conv-result-value" id="conv-result-value">—</div>
         </div>
       </div>
@@ -915,57 +916,57 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
     </div>
 
     <div class="tools-tabs">
-      <button class="tool-tab active" onclick="switchToolTab('dca',this)">📈 DCA Simulator</button>
-      <button class="tool-tab" onclick="switchToolTab('compound',this)">🔢 Σύνθετες Αποδόσεις</button>
-      <button class="tool-tab" onclick="switchToolTab('dcf',this)">💹 DCF / Παρούσα Αξία</button>
-      <button class="tool-tab" onclick="switchToolTab('breakeven',this)">⚖️ Break-Even</button>
+      <button class="tool-tab active" onclick="switchToolTab('dca',this)" data-i18n="tab_dca">📈 DCA Simulator</button>
+      <button class="tool-tab" onclick="switchToolTab('compound',this)" data-i18n="tab_compound">🔢 Σύνθετες Αποδόσεις</button>
+      <button class="tool-tab" onclick="switchToolTab('dcf',this)" data-i18n="tab_dcf">💹 DCF / Παρούσα Αξία</button>
+      <button class="tool-tab" onclick="switchToolTab('breakeven',this)" data-i18n="tab_breakeven">⚖️ Break-Even</button>
     </div>
 
     <!-- DCA SIMULATOR -->
     <div id="tool-dca" class="tool-panel active">
       <div class="tool-card">
-        <div class="tool-card-title">Dollar-Cost Averaging Simulator</div>
-        <div class="tool-card-desc">Επενδύστε σταθερό ποσό σε τακτά διαστήματα. Δείτε πώς η συνεπής επένδυση αυξάνει το χαρτοφυλάκιό σας με την πάροδο του χρόνου, ακόμα και σε μεταβλητές αγορές.</div>
+        <div class="tool-card-title" data-i18n="dca_title">Dollar-Cost Averaging Simulator</div>
+        <div class="tool-card-desc" data-i18n="dca_desc">Επενδύστε σταθερό ποσό σε τακτά διαστήματα. Δείτε πώς η συνεπής επένδυση αυξάνει το χαρτοφυλάκιό σας με την πάροδο του χρόνου, ακόμα και σε μεταβλητές αγορές.</div>
         <div class="tool-inputs">
           <div class="tool-field">
-            <label class="tool-label">Ποσό ανά περίοδο (€)</label>
+            <label class="tool-label" data-i18n="dca_amount_lbl">Ποσό ανά περίοδο (€)</label>
             <input type="number" class="tool-input" id="dca-amount" value="100" min="1">
           </div>
           <div class="tool-field">
-            <label class="tool-label">Συχνότητα</label>
+            <label class="tool-label" data-i18n="dca_freq_lbl">Συχνότητα</label>
             <select class="tool-select" id="dca-freq">
-              <option value="12">Μηνιαία</option>
-              <option value="52">Εβδομαδιαία</option>
-              <option value="4">Τριμηνιαία</option>
-              <option value="1">Ετήσια</option>
+              <option value="12" data-i18n="dca_monthly">Μηνιαία</option>
+              <option value="52" data-i18n="dca_weekly">Εβδομαδιαία</option>
+              <option value="4" data-i18n="dca_quarterly">Τριμηνιαία</option>
+              <option value="1" data-i18n="dca_yearly">Ετήσια</option>
             </select>
           </div>
           <div class="tool-field">
-            <label class="tool-label">Χρόνια επένδυσης</label>
+            <label class="tool-label" data-i18n="dca_years_lbl">Χρόνια επένδυσης</label>
             <input type="number" class="tool-input" id="dca-years" value="10" min="1" max="50">
           </div>
           <div class="tool-field">
-            <label class="tool-label">Ετήσια απόδοση (%)</label>
+            <label class="tool-label" data-i18n="dca_rate_lbl">Ετήσια απόδοση (%)</label>
             <input type="number" class="tool-input" id="dca-rate" value="12" min="0" step="0.1">
           </div>
         </div>
-        <button class="tool-calc-btn" onclick="calcDCA()">⚡ Υπολογισμός</button>
+        <button class="tool-calc-btn" onclick="calcDCA()" data-i18n="calc_btn">⚡ Υπολογισμός</button>
         <div id="dca-results" class="tool-hidden">
           <div class="tool-result-grid">
             <div class="tool-result-card">
-              <div class="tool-result-label">Συνολική Επένδυση</div>
+              <div class="tool-result-label" data-i18n="dca_invested_lbl">Συνολική Επένδυση</div>
               <div class="tool-result-value" id="dca-invested">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Τελική Αξία</div>
+              <div class="tool-result-label" data-i18n="dca_final_lbl">Τελική Αξία</div>
               <div class="tool-result-value blue" id="dca-final">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Κέρδος</div>
+              <div class="tool-result-label" data-i18n="dca_profit_lbl">Κέρδος</div>
               <div class="tool-result-value pos" id="dca-profit">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Απόδοση</div>
+              <div class="tool-result-label" data-i18n="dca_roi_lbl">Απόδοση</div>
               <div class="tool-result-value pos" id="dca-roi">—</div>
             </div>
           </div>
@@ -979,48 +980,48 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
     <!-- COMPOUND RETURNS -->
     <div id="tool-compound" class="tool-panel">
       <div class="tool-card">
-        <div class="tool-card-title">Σύνθετες Αποδόσεις (FV)</div>
-        <div class="tool-card-desc">Υπολογίστε τη μελλοντική αξία μιας εφάπαξ επένδυσης με ανατοκισμό: FV = PV × (1 + r)ⁿ. Δείτε τη δύναμη του compound interest.</div>
+        <div class="tool-card-title" data-i18n="cmp_title">Σύνθετες Αποδόσεις (FV)</div>
+        <div class="tool-card-desc" data-i18n="cmp_desc">Υπολογίστε τη μελλοντική αξία μιας εφάπαξ επένδυσης με ανατοκισμό: FV = PV × (1 + r)ⁿ. Δείτε τη δύναμη του compound interest.</div>
         <div class="tool-inputs">
           <div class="tool-field">
-            <label class="tool-label">Αρχικό Κεφάλαιο (€)</label>
+            <label class="tool-label" data-i18n="cmp_pv_lbl">Αρχικό Κεφάλαιο (€)</label>
             <input type="number" class="tool-input" id="cmp-pv" value="10000" min="1">
           </div>
           <div class="tool-field">
-            <label class="tool-label">Ετήσια Απόδοση (%)</label>
+            <label class="tool-label" data-i18n="cmp_rate_lbl">Ετήσια Απόδοση (%)</label>
             <input type="number" class="tool-input" id="cmp-rate" value="15" step="0.1">
           </div>
           <div class="tool-field">
-            <label class="tool-label">Χρόνια</label>
+            <label class="tool-label" data-i18n="cmp_years_lbl">Χρόνια</label>
             <input type="number" class="tool-input" id="cmp-years" value="10" min="1" max="50">
           </div>
           <div class="tool-field">
-            <label class="tool-label">Ανατοκισμός ανά έτος</label>
+            <label class="tool-label" data-i18n="cmp_freq_lbl">Ανατοκισμός ανά έτος</label>
             <select class="tool-select" id="cmp-freq">
-              <option value="1">Ετήσια</option>
-              <option value="12" selected>Μηνιαία</option>
-              <option value="52">Εβδομαδιαία</option>
-              <option value="365">Ημερήσια</option>
+              <option value="1" data-i18n="cmp_annual">Ετήσια</option>
+              <option value="12" selected data-i18n="cmp_monthly">Μηνιαία</option>
+              <option value="52" data-i18n="cmp_weekly">Εβδομαδιαία</option>
+              <option value="365" data-i18n="cmp_daily">Ημερήσια</option>
             </select>
           </div>
         </div>
-        <button class="tool-calc-btn" onclick="calcCompound()">⚡ Υπολογισμός</button>
+        <button class="tool-calc-btn" onclick="calcCompound()" data-i18n="calc_btn">⚡ Υπολογισμός</button>
         <div id="cmp-results" class="tool-hidden">
           <div class="tool-result-grid">
             <div class="tool-result-card">
-              <div class="tool-result-label">Αρχικό Κεφάλαιο</div>
+              <div class="tool-result-label" data-i18n="cmp_initial_lbl">Αρχικό Κεφάλαιο</div>
               <div class="tool-result-value" id="cmp-initial">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Μελλοντική Αξία</div>
+              <div class="tool-result-label" data-i18n="cmp_fv_lbl">Μελλοντική Αξία</div>
               <div class="tool-result-value blue" id="cmp-fv">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Συνολικό Κέρδος</div>
+              <div class="tool-result-label" data-i18n="cmp_gain_lbl">Συνολικό Κέρδος</div>
               <div class="tool-result-value pos" id="cmp-gain">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Πολλαπλάσιο (x)</div>
+              <div class="tool-result-label" data-i18n="cmp_mult_lbl">Πολλαπλάσιο (x)</div>
               <div class="tool-result-value pos" id="cmp-mult">—</div>
             </div>
           </div>
@@ -1034,39 +1035,39 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
     <!-- DCF / PRESENT VALUE -->
     <div id="tool-dcf" class="tool-panel">
       <div class="tool-card">
-        <div class="tool-card-title">DCF — Προεξοφλημένη Παρούσα Αξία</div>
-        <div class="tool-card-desc">Πόσο αξίζει σήμερα ένα ποσό που θα λάβετε στο μέλλον; Η προεξόφληση μετράει το πραγματικό κόστος ευκαιρίας: PV = FV ÷ (1 + r)ⁿ</div>
+        <div class="tool-card-title" data-i18n="dcf_title">DCF — Προεξοφλημένη Παρούσα Αξία</div>
+        <div class="tool-card-desc" data-i18n="dcf_desc">Πόσο αξίζει σήμερα ένα ποσό που θα λάβετε στο μέλλον; Η προεξόφληση μετράει το πραγματικό κόστος ευκαιρίας: PV = FV ÷ (1 + r)ⁿ</div>
         <div class="tool-inputs">
           <div class="tool-field">
-            <label class="tool-label">Μελλοντική Αξία (€)</label>
+            <label class="tool-label" data-i18n="dcf_fv_lbl">Μελλοντική Αξία (€)</label>
             <input type="number" class="tool-input" id="dcf-fv" value="100000" min="1">
           </div>
           <div class="tool-field">
-            <label class="tool-label">Προεξοφλητικό Επιτόκιο (%)</label>
+            <label class="tool-label" data-i18n="dcf_rate_lbl">Προεξοφλητικό Επιτόκιο (%)</label>
             <input type="number" class="tool-input" id="dcf-rate" value="10" step="0.1">
           </div>
           <div class="tool-field">
-            <label class="tool-label">Χρόνια στο μέλλον</label>
+            <label class="tool-label" data-i18n="dcf_years_lbl">Χρόνια στο μέλλον</label>
             <input type="number" class="tool-input" id="dcf-years" value="5" min="1" max="50">
           </div>
         </div>
-        <button class="tool-calc-btn" onclick="calcDCF()">⚡ Υπολογισμός</button>
+        <button class="tool-calc-btn" onclick="calcDCF()" data-i18n="calc_btn">⚡ Υπολογισμός</button>
         <div id="dcf-results" class="tool-hidden">
           <div class="tool-result-grid">
             <div class="tool-result-card">
-              <div class="tool-result-label">Μελλοντική Αξία</div>
+              <div class="tool-result-label" data-i18n="dcf_future_lbl">Μελλοντική Αξία</div>
               <div class="tool-result-value" id="dcf-future">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Παρούσα Αξία (σήμερα)</div>
+              <div class="tool-result-label" data-i18n="dcf_pv_lbl">Παρούσα Αξία (σήμερα)</div>
               <div class="tool-result-value blue" id="dcf-pv">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Διαφορά (κόστος ευκαιρίας)</div>
+              <div class="tool-result-label" data-i18n="dcf_diff_lbl">Διαφορά (κόστος ευκαιρίας)</div>
               <div class="tool-result-value neg" id="dcf-diff">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Απαιτούμενη σημερινή επένδυση</div>
+              <div class="tool-result-label" data-i18n="dcf_req_lbl">Απαιτούμενη σημερινή επένδυση</div>
               <div class="tool-result-value pos" id="dcf-req">—</div>
             </div>
           </div>
@@ -1177,6 +1178,64 @@ const TRANSLATIONS = {
     tab_dcf:'💹 DCF / Παρούσα Αξία', tab_breakeven:'⚖️ Break-Even',
     market_label:'Αγορά', market_title:'Κρυπτονομίσματα',
     converter_label:'Μετατροπέας', converter_title:'Μετατροπέας Νομισμάτων',
+    mkt_title:'Αγορά Κρυπτονομισμάτων', mkt_subtitle:'Τιμές και στατιστικά για τα 20 κορυφαία νομίσματα',
+    mkt_search_ph:'Αναζήτηση νομίσματος...',
+    sort_cap:'Κεφαλαιοποίηση', sort_price:'Τιμή', sort_change:'24h%', sort_volume:'Όγκος',
+    no_coins:'Δεν βρέθηκαν νομίσματα', no_coins_sub:'Δοκιμάστε διαφορετικό όρο',
+    trend_title:'🔥 Trending Νομίσματα', trend_subtitle:'Τα πιο δημοφιλή κρυπτονομίσματα αυτή τη στιγμή',
+    gl_title:'Κερδισμένοι & Χαμένοι', gl_subtitle:'Οι μεγαλύτερες κινήσεις των τελευταίων 24 ωρών',
+    gl_gainers_hdr:'Top 8 Κερδισμένοι', gl_losers_hdr:'Top 8 Χαμένοι',
+    loading:'Φόρτωση...',
+    port_title:'Χαρτοφυλάκιο', port_subtitle:'Παρακολούθηση επενδύσεών σας',
+    synced:'✓ Συγχρονισμένο',
+    add_position:'➕ Προσθήκη Θέσης',
+    form_coin:'Νόμισμα', form_amount:'Ποσότητα', form_buy_price:'Τιμή Αγοράς (€)',
+    form_ph_amount:'πχ. 0.5', form_ph_price:'πχ. 30000',
+    btn_add:'Προσθήκη στο Χαρτοφυλάκιο',
+    chart_dist:'Κατανομή Χαρτοφυλακίου',
+    chart_add_coins:'Προσθέστε νομίσματα για να δείτε τη διανομή',
+    my_positions:'Οι Θέσεις Μου',
+    empty_port:'Δεν έχετε θέσεις ακόμη', empty_port_sub:'Προσθέστε το πρώτο σας νόμισμα από τη φόρμα',
+    total_value_label:'Συνολική Αξία', total_pnl_label:'Συνολικό P&L', positions_label:'Θέσεις',
+    conv_title:'Μετατροπέας Νομισμάτων',
+    conv_subtitle:'Μετατρέψτε μεταξύ κρυπτονομισμάτων και fiat σε πραγματικό χρόνο',
+    conv_from_label:'Από', conv_to_label:'Προς', conv_result_label:'Αποτέλεσμα',
+    err_load:'Αποτυχία φόρτωσης δεδομένων', err_conn:'Ελέγξτε τη σύνδεσή σας',
+    btn_retry:'↻ Επανάληψη', err_no_trend:'Αποτυχία φόρτωσης',
+    fng_extreme_fear:'Ακραίος Φόβος', fng_fear:'Φόβος', fng_neutral:'Ουδέτερο',
+    fng_greed:'Απληστία', fng_extreme_greed:'Ακραία Απληστία',
+    dca_title:'Dollar-Cost Averaging Simulator',
+    dca_desc:'Επενδύστε σταθερό ποσό σε τακτά διαστήματα. Δείτε πώς η συνεπής επένδυση αυξάνει το χαρτοφυλάκιό σας με την πάροδο του χρόνου, ακόμα και σε μεταβλητές αγορές.',
+    dca_amount_lbl:'Ποσό ανά περίοδο (€)', dca_freq_lbl:'Συχνότητα',
+    dca_years_lbl:'Χρόνια επένδυσης', dca_rate_lbl:'Ετήσια απόδοση (%)',
+    dca_monthly:'Μηνιαία', dca_weekly:'Εβδομαδιαία', dca_quarterly:'Τριμηνιαία', dca_yearly:'Ετήσια',
+    dca_invested_lbl:'Συνολική Επένδυση', dca_final_lbl:'Τελική Αξία',
+    dca_profit_lbl:'Κέρδος', dca_roi_lbl:'Απόδοση',
+    dca_chart_invested:'Επένδυση', dca_chart_value:'Αξία Χαρτοφυλακίου',
+    tab_compound:'🔢 Σύνθετες Αποδόσεις',
+    cmp_title:'Σύνθετες Αποδόσεις (FV)',
+    cmp_desc:'Υπολογίστε τη μελλοντική αξία μιας εφάπαξ επένδυσης με ανατοκισμό: FV = PV × (1 + r)ⁿ. Δείτε τη δύναμη του compound interest.',
+    cmp_pv_lbl:'Αρχικό Κεφάλαιο (€)', cmp_rate_lbl:'Ετήσια Απόδοση (%)',
+    cmp_years_lbl:'Χρόνια', cmp_freq_lbl:'Ανατοκισμός ανά έτος',
+    cmp_annual:'Ετήσια', cmp_monthly:'Μηνιαία', cmp_weekly:'Εβδομαδιαία', cmp_daily:'Ημερήσια',
+    cmp_initial_lbl:'Αρχικό Κεφάλαιο', cmp_fv_lbl:'Μελλοντική Αξία',
+    cmp_gain_lbl:'Συνολικό Κέρδος', cmp_mult_lbl:'Πολλαπλάσιο (x)',
+    cmp_chart_simple:'Απλό Επιτόκιο', cmp_chart_compound:'Ανατοκισμός',
+    dcf_title:'DCF — Προεξοφλημένη Παρούσα Αξία',
+    dcf_desc:'Πόσο αξίζει σήμερα ένα ποσό που θα λάβετε στο μέλλον; Η προεξόφληση μετράει το πραγματικό κόστος ευκαιρίας: PV = FV ÷ (1 + r)ⁿ',
+    dcf_fv_lbl:'Μελλοντική Αξία (€)', dcf_rate_lbl:'Προεξοφλητικό Επιτόκιο (%)',
+    dcf_years_lbl:'Χρόνια στο μέλλον',
+    dcf_future_lbl:'Μελλοντική Αξία', dcf_pv_lbl:'Παρούσα Αξία (σήμερα)',
+    dcf_diff_lbl:'Διαφορά (κόστος ευκαιρίας)', dcf_req_lbl:'Απαιτούμενη σημερινή επένδυση',
+    dcf_chart_nominal:'Ονομαστική Αξία', dcf_chart_pv:'Παρούσα Αξία (DCF)',
+    be_title:'Break-Even Calculator',
+    be_desc:'Σε ποια τιμή σπάει το κόστος αγοράς σας; Υπολογίστε την τιμή ισορροπίας λαμβάνοντας υπόψη fees, μέση τιμή αγοράς και στόχο κέρδους.',
+    be_avg_lbl:'Μέση Τιμή Αγοράς (€)', be_invested_lbl:'Ποσό Επένδυσης (€)',
+    be_fees_lbl:'Συνολικά Fees (%)', be_target_lbl:'Στόχος Κέρδους (%)',
+    be_breakeven_lbl:'Τιμή Break-Even', be_profit_price_lbl:'Τιμή Στόχου Κέρδους',
+    be_coins_lbl:'Ποσό Κρυπτονομίσματος', be_profit_eur_lbl:'Κέρδος στο στόχο',
+    be_chart_pnl:'Κέρδος/Ζημιά (€)',
+    year_lbl:'Έτος',
   },
   en: {
     live:'Live', menu:'MENU', nav_tagline:'₿ CryptoLive — Navigation',
@@ -1195,6 +1254,63 @@ const TRANSLATIONS = {
     tab_dcf:'💹 DCF / Present Value', tab_breakeven:'⚖️ Break-Even',
     market_label:'Market', market_title:'Cryptocurrencies',
     converter_label:'Converter', converter_title:'Currency Converter',
+    mkt_title:'Cryptocurrency Market', mkt_subtitle:'Prices and statistics for the top 20 coins',
+    mkt_search_ph:'Search coin...',
+    sort_cap:'Market Cap', sort_price:'Price', sort_change:'24h%', sort_volume:'Volume',
+    no_coins:'No coins found', no_coins_sub:'Try a different search term',
+    trend_title:'🔥 Trending Coins', trend_subtitle:'Most popular cryptocurrencies right now',
+    gl_title:'Top Movers', gl_subtitle:'Biggest moves in the last 24 hours',
+    gl_gainers_hdr:'Top 8 Gainers', gl_losers_hdr:'Top 8 Losers',
+    loading:'Loading...',
+    port_title:'Portfolio', port_subtitle:'Track your investments',
+    synced:'✓ Synced',
+    add_position:'➕ Add Position',
+    form_coin:'Coin', form_amount:'Amount', form_buy_price:'Buy Price (€)',
+    form_ph_amount:'e.g. 0.5', form_ph_price:'e.g. 30000',
+    btn_add:'Add to Portfolio',
+    chart_dist:'Portfolio Distribution',
+    chart_add_coins:'Add coins to see the distribution',
+    my_positions:'My Positions',
+    empty_port:'No positions yet', empty_port_sub:'Add your first coin from the form',
+    total_value_label:'Total Value', total_pnl_label:'Total P&L', positions_label:'Positions',
+    conv_title:'Currency Converter',
+    conv_subtitle:'Convert between cryptocurrencies and fiat in real time',
+    conv_from_label:'From', conv_to_label:'To', conv_result_label:'Result',
+    err_load:'Failed to load data', err_conn:'Check your connection',
+    btn_retry:'↻ Retry', err_no_trend:'Failed to load',
+    fng_extreme_fear:'Extreme Fear', fng_fear:'Fear', fng_neutral:'Neutral',
+    fng_greed:'Greed', fng_extreme_greed:'Extreme Greed',
+    dca_title:'Dollar-Cost Averaging Simulator',
+    dca_desc:'Invest a fixed amount at regular intervals. See how consistent investing grows your portfolio over time, even in volatile markets.',
+    dca_amount_lbl:'Amount per period (€)', dca_freq_lbl:'Frequency',
+    dca_years_lbl:'Investment Years', dca_rate_lbl:'Annual Return (%)',
+    dca_monthly:'Monthly', dca_weekly:'Weekly', dca_quarterly:'Quarterly', dca_yearly:'Yearly',
+    dca_invested_lbl:'Total Invested', dca_final_lbl:'Final Value',
+    dca_profit_lbl:'Profit', dca_roi_lbl:'ROI',
+    dca_chart_invested:'Invested', dca_chart_value:'Portfolio Value',
+    cmp_title:'Compound Returns (FV)',
+    cmp_desc:'Calculate the future value of a lump-sum investment with compounding: FV = PV × (1 + r)ⁿ. See the power of compound interest.',
+    cmp_pv_lbl:'Initial Capital (€)', cmp_rate_lbl:'Annual Return (%)',
+    cmp_years_lbl:'Years', cmp_freq_lbl:'Compounding per year',
+    cmp_annual:'Yearly', cmp_monthly:'Monthly', cmp_weekly:'Weekly', cmp_daily:'Daily',
+    cmp_initial_lbl:'Initial Capital', cmp_fv_lbl:'Future Value',
+    cmp_gain_lbl:'Total Gain', cmp_mult_lbl:'Multiple (x)',
+    cmp_chart_simple:'Simple Interest', cmp_chart_compound:'Compound Interest',
+    dcf_title:'DCF — Discounted Present Value',
+    dcf_desc:'How much is a future amount worth today? The discount measures the true opportunity cost: PV = FV ÷ (1 + r)ⁿ',
+    dcf_fv_lbl:'Future Value (€)', dcf_rate_lbl:'Discount Rate (%)',
+    dcf_years_lbl:'Years in the future',
+    dcf_future_lbl:'Future Value', dcf_pv_lbl:'Present Value (today)',
+    dcf_diff_lbl:'Difference (opportunity cost)', dcf_req_lbl:'Required investment today',
+    dcf_chart_nominal:'Nominal Value', dcf_chart_pv:'Present Value (DCF)',
+    be_title:'Break-Even Calculator',
+    be_desc:'At what price does your purchase cost break even? Calculate the equilibrium price taking into account fees, average buy price and profit target.',
+    be_avg_lbl:'Average Buy Price (€)', be_invested_lbl:'Investment Amount (€)',
+    be_fees_lbl:'Total Fees (%)', be_target_lbl:'Profit Target (%)',
+    be_breakeven_lbl:'Break-Even Price', be_profit_price_lbl:'Profit Target Price',
+    be_coins_lbl:'Coin Amount', be_profit_eur_lbl:'Profit at target',
+    be_chart_pnl:'Profit/Loss (€)',
+    year_lbl:'Year',
   },
   fr: {
     live:'En direct', menu:'MENU', nav_tagline:'₿ CryptoLive — Navigation',
@@ -1209,10 +1325,67 @@ const TRANSLATIONS = {
     tools_label:'Outils Financiers', tools_title:'Calculatrices',
     tools_subtitle:'Calculez les rendements, les actualisations et les stratégies d\'investissement.',
     calc_btn:'⚡ Calculer',
-    tab_dca:'📈 Simulateur DCA', tab_compound:'🔢 Rendements Composés',
-    tab_dcf:'💹 DCF / Valeur Actuelle', tab_breakeven:'⚖️ Seuil de Rentabilité',
+    tab_dca:'📈 DCA Simulator', tab_compound:'🔢 Rendements Composés',
+    tab_dcf:'💹 DCF / Valeur Actuelle', tab_breakeven:'⚖️ Break-Even',
     market_label:'Marché', market_title:'Cryptomonnaies',
     converter_label:'Convertisseur', converter_title:'Convertisseur de Devises',
+    mkt_title:'Marché des Cryptomonnaies', mkt_subtitle:'Prix et statistiques pour les 20 meilleures cryptos',
+    mkt_search_ph:'Rechercher une monnaie...',
+    sort_cap:'Capitalisation', sort_price:'Prix', sort_change:'24h%', sort_volume:'Volume',
+    no_coins:'Aucune monnaie trouvée', no_coins_sub:'Essayez un autre terme',
+    trend_title:'🔥 Cryptos Tendance', trend_subtitle:'Les cryptomonnaies les plus populaires en ce moment',
+    gl_title:'Gagnants & Perdants', gl_subtitle:'Plus grands mouvements des dernières 24 heures',
+    gl_gainers_hdr:'Top 8 Gagnants', gl_losers_hdr:'Top 8 Perdants',
+    loading:'Chargement...',
+    port_title:'Portefeuille', port_subtitle:'Suivez vos investissements',
+    synced:'✓ Synchronisé',
+    add_position:'➕ Ajouter Position',
+    form_coin:'Monnaie', form_amount:'Quantité', form_buy_price:'Prix d\'achat (€)',
+    form_ph_amount:'p.ex. 0.5', form_ph_price:'p.ex. 30000',
+    btn_add:'Ajouter au Portefeuille',
+    chart_dist:'Répartition du Portefeuille',
+    chart_add_coins:'Ajoutez des monnaies pour voir la répartition',
+    my_positions:'Mes Positions',
+    empty_port:'Pas encore de positions', empty_port_sub:'Ajoutez votre première monnaie depuis le formulaire',
+    total_value_label:'Valeur Totale', total_pnl_label:'P&L Total', positions_label:'Positions',
+    conv_title:'Convertisseur de Devises',
+    conv_subtitle:'Convertissez entre cryptomonnaies et monnaies fiat en temps réel',
+    conv_from_label:'De', conv_to_label:'Vers', conv_result_label:'Résultat',
+    err_load:'Échec du chargement des données', err_conn:'Vérifiez votre connexion',
+    btn_retry:'↻ Réessayer', err_no_trend:'Échec du chargement',
+    fng_extreme_fear:'Peur Extrême', fng_fear:'Peur', fng_neutral:'Neutre',
+    fng_greed:'Avidité', fng_extreme_greed:'Avidité Extrême',
+    dca_title:'Dollar-Cost Averaging Simulator',
+    dca_desc:'Investissez un montant fixe à intervalles réguliers. Voyez comment un investissement régulier fait croître votre portefeuille.',
+    dca_amount_lbl:'Montant par période (€)', dca_freq_lbl:'Fréquence',
+    dca_years_lbl:'Années d\'investissement', dca_rate_lbl:'Rendement Annuel (%)',
+    dca_monthly:'Mensuel', dca_weekly:'Hebdomadaire', dca_quarterly:'Trimestriel', dca_yearly:'Annuel',
+    dca_invested_lbl:'Investissement Total', dca_final_lbl:'Valeur Finale',
+    dca_profit_lbl:'Bénéfice', dca_roi_lbl:'Rendement',
+    dca_chart_invested:'Investi', dca_chart_value:'Valeur du Portefeuille',
+    cmp_title:'Rendements Composés (FV)',
+    cmp_desc:'Calculez la valeur future d\'un investissement unique avec composition: FV = PV × (1 + r)ⁿ.',
+    cmp_pv_lbl:'Capital Initial (€)', cmp_rate_lbl:'Rendement Annuel (%)',
+    cmp_years_lbl:'Années', cmp_freq_lbl:'Composition par an',
+    cmp_annual:'Annuel', cmp_monthly:'Mensuel', cmp_weekly:'Hebdomadaire', cmp_daily:'Quotidien',
+    cmp_initial_lbl:'Capital Initial', cmp_fv_lbl:'Valeur Future',
+    cmp_gain_lbl:'Gain Total', cmp_mult_lbl:'Multiple (x)',
+    cmp_chart_simple:'Intérêt Simple', cmp_chart_compound:'Intérêts Composés',
+    dcf_title:'DCF — Valeur Actuelle Nette',
+    dcf_desc:'Combien vaut aujourd\'hui une somme future? La valeur actualisée mesure le coût d\'opportunité réel: PV = FV ÷ (1 + r)ⁿ',
+    dcf_fv_lbl:'Valeur Future (€)', dcf_rate_lbl:'Taux d\'actualisation (%)',
+    dcf_years_lbl:'Années dans le futur',
+    dcf_future_lbl:'Valeur Future', dcf_pv_lbl:'Valeur Actuelle (aujourd\'hui)',
+    dcf_diff_lbl:'Différence (coût d\'opportunité)', dcf_req_lbl:'Investissement requis aujourd\'hui',
+    dcf_chart_nominal:'Valeur Nominale', dcf_chart_pv:'Valeur Actuelle (DCF)',
+    be_title:'Break-Even Calculator',
+    be_desc:'À quel prix votre coût d\'achat atteint-il le seuil de rentabilité?',
+    be_avg_lbl:'Prix d\'achat moyen (€)', be_invested_lbl:'Montant investi (€)',
+    be_fees_lbl:'Frais totaux (%)', be_target_lbl:'Objectif de profit (%)',
+    be_breakeven_lbl:'Prix Seuil de Rentabilité', be_profit_price_lbl:'Prix Objectif de Profit',
+    be_coins_lbl:'Montant de Cryptomonnaie', be_profit_eur_lbl:'Bénéfice à l\'objectif',
+    be_chart_pnl:'Bénéfice/Perte (€)',
+    year_lbl:'Année',
   },
   de: {
     live:'Live', menu:'MENÜ', nav_tagline:'₿ CryptoLive — Navigation',
@@ -1227,10 +1400,67 @@ const TRANSLATIONS = {
     tools_label:'Finanztools', tools_title:'Rechner',
     tools_subtitle:'Berechnen Sie Renditen, Abzinsungen und Anlagestrategien über die Zeit.',
     calc_btn:'⚡ Berechnen',
-    tab_dca:'📈 DCA-Simulator', tab_compound:'🔢 Zinseszins',
-    tab_dcf:'💹 DCF / Barwert', tab_breakeven:'⚖️ Gewinnschwelle',
+    tab_dca:'📈 DCA Simulator', tab_compound:'🔢 Zinseszins',
+    tab_dcf:'💹 DCF / Barwert', tab_breakeven:'⚖️ Break-Even',
     market_label:'Markt', market_title:'Kryptowährungen',
     converter_label:'Umrechner', converter_title:'Währungsumrechner',
+    mkt_title:'Kryptowährungsmarkt', mkt_subtitle:'Preise und Statistiken für die Top 20 Coins',
+    mkt_search_ph:'Coin suchen...',
+    sort_cap:'Marktkapitalisierung', sort_price:'Preis', sort_change:'24h%', sort_volume:'Volumen',
+    no_coins:'Keine Coins gefunden', no_coins_sub:'Versuchen Sie einen anderen Begriff',
+    trend_title:'🔥 Trending Coins', trend_subtitle:'Die beliebtesten Kryptowährungen gerade jetzt',
+    gl_title:'Gewinner & Verlierer', gl_subtitle:'Größte Bewegungen der letzten 24 Stunden',
+    gl_gainers_hdr:'Top 8 Gewinner', gl_losers_hdr:'Top 8 Verlierer',
+    loading:'Laden...',
+    port_title:'Portfolio', port_subtitle:'Ihre Investitionen verfolgen',
+    synced:'✓ Synchronisiert',
+    add_position:'➕ Position Hinzufügen',
+    form_coin:'Coin', form_amount:'Menge', form_buy_price:'Kaufpreis (€)',
+    form_ph_amount:'z.B. 0.5', form_ph_price:'z.B. 30000',
+    btn_add:'Zum Portfolio hinzufügen',
+    chart_dist:'Portfolio-Verteilung',
+    chart_add_coins:'Fügen Sie Coins hinzu um die Verteilung zu sehen',
+    my_positions:'Meine Positionen',
+    empty_port:'Noch keine Positionen', empty_port_sub:'Fügen Sie Ihren ersten Coin über das Formular hinzu',
+    total_value_label:'Gesamtwert', total_pnl_label:'Gesamt P&L', positions_label:'Positionen',
+    conv_title:'Währungsumrechner',
+    conv_subtitle:'Konvertieren Sie zwischen Kryptowährungen und Fiat in Echtzeit',
+    conv_from_label:'Von', conv_to_label:'Nach', conv_result_label:'Ergebnis',
+    err_load:'Fehler beim Laden der Daten', err_conn:'Überprüfen Sie Ihre Verbindung',
+    btn_retry:'↻ Wiederholen', err_no_trend:'Laden fehlgeschlagen',
+    fng_extreme_fear:'Extreme Angst', fng_fear:'Angst', fng_neutral:'Neutral',
+    fng_greed:'Gier', fng_extreme_greed:'Extreme Gier',
+    dca_title:'Dollar-Cost Averaging Simulator',
+    dca_desc:'Investieren Sie regelmäßig einen festen Betrag. Sehen Sie, wie konsequentes Investieren Ihr Portfolio über die Zeit wachsen lässt.',
+    dca_amount_lbl:'Betrag pro Periode (€)', dca_freq_lbl:'Häufigkeit',
+    dca_years_lbl:'Anlagejahre', dca_rate_lbl:'Jährliche Rendite (%)',
+    dca_monthly:'Monatlich', dca_weekly:'Wöchentlich', dca_quarterly:'Vierteljährlich', dca_yearly:'Jährlich',
+    dca_invested_lbl:'Gesamtinvestition', dca_final_lbl:'Endwert',
+    dca_profit_lbl:'Gewinn', dca_roi_lbl:'Rendite',
+    dca_chart_invested:'Investiert', dca_chart_value:'Portfoliowert',
+    cmp_title:'Zinseszins (FV)',
+    cmp_desc:'Berechnen Sie den zukünftigen Wert einer Einmalanlage mit Zinseszins: FV = PV × (1 + r)ⁿ.',
+    cmp_pv_lbl:'Anfangskapital (€)', cmp_rate_lbl:'Jährliche Rendite (%)',
+    cmp_years_lbl:'Jahre', cmp_freq_lbl:'Verzinsung pro Jahr',
+    cmp_annual:'Jährlich', cmp_monthly:'Monatlich', cmp_weekly:'Wöchentlich', cmp_daily:'Täglich',
+    cmp_initial_lbl:'Anfangskapital', cmp_fv_lbl:'Zukünftiger Wert',
+    cmp_gain_lbl:'Gesamtgewinn', cmp_mult_lbl:'Vielfaches (x)',
+    cmp_chart_simple:'Einfache Verzinsung', cmp_chart_compound:'Zinseszins',
+    dcf_title:'DCF — Abgezinster Barwert',
+    dcf_desc:'Wie viel ist ein zukünftiger Betrag heute wert? PV = FV ÷ (1 + r)ⁿ',
+    dcf_fv_lbl:'Zukünftiger Wert (€)', dcf_rate_lbl:'Diskontierungssatz (%)',
+    dcf_years_lbl:'Jahre in der Zukunft',
+    dcf_future_lbl:'Zukünftiger Wert', dcf_pv_lbl:'Barwert (heute)',
+    dcf_diff_lbl:'Differenz (Opportunitätskosten)', dcf_req_lbl:'Erforderliche heutige Investition',
+    dcf_chart_nominal:'Nominalwert', dcf_chart_pv:'Barwert (DCF)',
+    be_title:'Break-Even Calculator',
+    be_desc:'Bei welchem Preis erreicht Ihre Kaufposition die Gewinnschwelle?',
+    be_avg_lbl:'Durchschnittlicher Kaufpreis (€)', be_invested_lbl:'Investitionsbetrag (€)',
+    be_fees_lbl:'Gesamtgebühren (%)', be_target_lbl:'Gewinnziel (%)',
+    be_breakeven_lbl:'Gewinnschwellenpreis', be_profit_price_lbl:'Gewinnzielpreis',
+    be_coins_lbl:'Coin-Betrag', be_profit_eur_lbl:'Gewinn beim Ziel',
+    be_chart_pnl:'Gewinn/Verlust (€)',
+    year_lbl:'Jahr',
   }
 };
 
