@@ -214,6 +214,7 @@ nav {
 .menu-overlay.open .mol-link:nth-child(4) { transition-delay:0.31s; }
 .menu-overlay.open .mol-link:nth-child(5) { transition-delay:0.38s; }
 .menu-overlay.open .mol-link:nth-child(6) { transition-delay:0.45s; }
+.menu-overlay.open .mol-link:nth-child(7) { transition-delay:0.52s; }
 
 .mol-link:hover {
   background:linear-gradient(135deg,#00d4ff,#a855f7);
@@ -567,6 +568,44 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 @keyframes fade-in-up { from { opacity:0;transform:translateY(20px); } to { opacity:1;transform:translateY(0); } }
 @keyframes shake { 0%,100% { transform:translateX(0); } 20% { transform:translateX(-6px); } 40% { transform:translateX(6px); } 60% { transform:translateX(-4px); } 80% { transform:translateX(4px); } }
 
+/* ===== LANGUAGE SWITCHER ===== */
+.lang-switcher { display:flex;align-items:center;gap:4px;margin-right:8px; }
+.lang-btn { padding:5px 9px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted2);font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;letter-spacing:0.3px; }
+.lang-btn:hover { background:var(--surface2);color:var(--text); }
+.lang-btn.active { background:rgba(0,212,255,0.1);border-color:var(--blue);color:var(--blue); }
+@media (max-width:500px) { .lang-switcher { display:none; } }
+
+/* ===== TOOLS PAGE ===== */
+.tools-header { margin-bottom:36px; }
+.tools-tabs { display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px; }
+.tool-tab { padding:10px 20px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--muted2);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;letter-spacing:0.2px; }
+.tool-tab:hover { background:var(--surface2);color:var(--text); }
+.tool-tab.active { background:rgba(0,212,255,0.1);border-color:var(--blue);color:var(--blue); }
+.tool-panel { display:none; }
+.tool-panel.active { display:block; }
+.tool-card { background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:20px; }
+.tool-card-title { font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px;color:var(--text); }
+.tool-card-desc { font-size:13px;color:var(--muted2);margin-bottom:24px;line-height:1.6; }
+.tool-inputs { display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px; }
+.tool-field { display:flex;flex-direction:column;gap:6px; }
+.tool-label { font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:0.5px; }
+.tool-input { padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:15px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s;width:100%; }
+.tool-input:focus { border-color:var(--blue); }
+.tool-select { padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s;width:100%;cursor:pointer;-webkit-appearance:none; }
+.tool-select:focus { border-color:var(--blue); }
+.tool-select option { background:#0d1629; }
+.tool-calc-btn { display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.2s,transform 0.2s;font-family:'Inter',sans-serif;margin-bottom:24px; }
+.tool-calc-btn:hover { opacity:0.88;transform:translateY(-1px); }
+.tool-result-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px; }
+.tool-result-card { background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center; }
+.tool-result-label { font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px; }
+.tool-result-value { font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:800; }
+.tool-result-value.pos { color:var(--green); }
+.tool-result-value.neg { color:var(--red); }
+.tool-result-value.blue { background:linear-gradient(135deg,#00d4ff,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.tool-chart-wrap { position:relative;height:240px;width:100%;margin-top:8px; }
+.tool-hidden { display:none; }
+
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width:6px;height:6px; }
 ::-webkit-scrollbar-track { background:transparent; }
@@ -627,14 +666,14 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
   <div class="splash-content">
     <div class="splash-logo">₿ CRYPTOLIVE</div>
     <div class="splash-title">Crypto<span class="grad">Live</span></div>
-    <div class="splash-tagline">Ζωντανές τιμές κρυπτονομισμάτων — σε πραγματικό χρόνο στα ελληνικά</div>
+    <div class="splash-tagline" data-i18n="splash_tagline">Ζωντανές τιμές κρυπτονομισμάτων — σε πραγματικό χρόνο στα ελληνικά</div>
     <div class="splash-badges">
       <div class="splash-badge">⚡ Πραγματικός Χρόνος</div>
       <div class="splash-badge">🔒 Ασφαλές</div>
       <div class="splash-badge">📊 Χαρτοφυλάκιο</div>
       <div class="splash-badge">🌙 Dark Mode</div>
     </div>
-    <button class="splash-btn" id="splash-btn">Ξεκινήστε →</button>
+    <button class="splash-btn" id="splash-btn" data-i18n="splash_btn">Ξεκινήστε →</button>
   </div>
 </div>
 
@@ -643,11 +682,17 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
   <span class="nav-logo" onclick="showPage('home')">₿ CryptoLive</span>
   <div class="nav-right">
     <div class="live-dot"></div>
-    <span class="live-label">Ζωντανό</span>
+    <span class="live-label" data-i18n="live">Ζωντανό</span>
+  </div>
+  <div class="lang-switcher">
+    <button class="lang-btn active" onclick="setLang('el')">ΕΛ</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" onclick="setLang('de')">DE</button>
   </div>
   <button class="nav-menu-btn" id="nav-menu-btn" onclick="openMenuOverlay()" aria-label="Μενού">
     <div class="nmb-lines"><span></span><span></span><span></span></div>
-    MENU
+    <span data-i18n="menu">MENU</span>
   </button>
 </nav>
 
@@ -655,14 +700,15 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 <div class="menu-overlay" id="menu-overlay" onclick="handleOverlayClick(event)">
   <button class="menu-overlay-close" onclick="closeMenuOverlay()">✕</button>
   <div class="menu-overlay-inner">
-    <div class="menu-overlay-tagline">₿ CryptoLive — Πλοήγηση</div>
+    <div class="menu-overlay-tagline" data-i18n="nav_tagline">₿ CryptoLive — Πλοήγηση</div>
     <div class="menu-overlay-links">
-      <button class="mol-link mol-active" data-page="home" onclick="showPage('home')"><span class="mol-num">01</span>Αρχική</button>
-      <button class="mol-link" data-page="market" onclick="showPage('market')"><span class="mol-num">02</span>Αγορά</button>
-      <button class="mol-link" data-page="trending" onclick="showPage('trending')"><span class="mol-num">03</span>Trending</button>
-      <button class="mol-link" data-page="gainers" onclick="showPage('gainers')"><span class="mol-num">04</span>Κερδισμένοι</button>
-      <button class="mol-link" data-page="portfolio" onclick="showPage('portfolio')"><span class="mol-num">05</span>Χαρτοφυλάκιο</button>
-      <button class="mol-link" data-page="converter" onclick="showPage('converter')"><span class="mol-num">06</span>Μετατροπέας</button>
+      <button class="mol-link mol-active" data-page="home" onclick="showPage('home')"><span class="mol-num">01</span><span data-i18n="page_home">Αρχική</span></button>
+      <button class="mol-link" data-page="market" onclick="showPage('market')"><span class="mol-num">02</span><span data-i18n="page_market">Αγορά</span></button>
+      <button class="mol-link" data-page="trending" onclick="showPage('trending')"><span class="mol-num">03</span><span data-i18n="page_trending">Trending</span></button>
+      <button class="mol-link" data-page="gainers" onclick="showPage('gainers')"><span class="mol-num">04</span><span data-i18n="page_gainers">Κερδισμένοι</span></button>
+      <button class="mol-link" data-page="portfolio" onclick="showPage('portfolio')"><span class="mol-num">05</span><span data-i18n="page_portfolio">Χαρτοφυλάκιο</span></button>
+      <button class="mol-link" data-page="converter" onclick="showPage('converter')"><span class="mol-num">06</span><span data-i18n="page_converter">Μετατροπέας</span></button>
+      <button class="mol-link" data-page="tools" onclick="showPage('tools')"><span class="mol-num">07</span><span data-i18n="page_tools">Εργαλεία</span></button>
     </div>
   </div>
 </div>
@@ -680,11 +726,11 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
     </div>
 
     <div class="hero-section reveal">
-      <div class="section-label">Αγορά Κρυπτονομισμάτων</div>
-      <h1 class="hero-title">Crypto Live Prices</h1>
+      <div class="section-label" data-i18n="home_label">Αγορά Κρυπτονομισμάτων</div>
+      <h1 class="hero-title" data-i18n="home_title">Crypto Live Prices</h1>
       <div class="hero-subtitle">
         <div class="live-dot"></div>
-        Ενημερώνεται αυτόματα σε πραγματικό χρόνο
+        <span data-i18n="home_subtitle">Ενημερώνεται αυτόματα σε πραγματικό χρόνο</span>
       </div>
     </div>
 
@@ -697,7 +743,7 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 
     <div class="bottom-grid reveal">
       <div class="glass-panel">
-        <div class="panel-title">Δείκτης Φόβου &amp; Απληστίας</div>
+        <div class="panel-title" data-i18n="fear_greed">Δείκτης Φόβου &amp; Απληστίας</div>
         <div class="fng-container">
           <svg id="fng-svg" viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg"></svg>
           <div class="fng-value-label">
@@ -707,7 +753,7 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
         </div>
       </div>
       <div class="glass-panel">
-        <div class="panel-title">🔥 Trending Τώρα</div>
+        <div class="panel-title" data-i18n="trending_now">🔥 Trending Τώρα</div>
         <div class="trending-mini-list" id="trending-mini">
           <div style="color:var(--muted);font-size:13px;">Φόρτωση...</div>
         </div>
@@ -860,6 +906,228 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
     </div>
   </div>
 
+  <!-- TOOLS PAGE -->
+  <div id="page-tools" class="page">
+    <div class="tools-header reveal">
+      <div class="section-label" data-i18n="tools_label">Χρηματοοικονομικά Εργαλεία</div>
+      <h2 class="hero-title" style="font-size:clamp(28px,5vw,52px);" data-i18n="tools_title">Αριθμομηχανές</h2>
+      <p style="color:var(--muted2);font-size:15px;margin-top:8px;" data-i18n="tools_subtitle">Υπολογίστε αποδόσεις, προεξοφλήσεις και στρατηγικές επένδυσης σε βάθος χρόνου.</p>
+    </div>
+
+    <div class="tools-tabs">
+      <button class="tool-tab active" onclick="switchToolTab('dca',this)">📈 DCA Simulator</button>
+      <button class="tool-tab" onclick="switchToolTab('compound',this)">🔢 Σύνθετες Αποδόσεις</button>
+      <button class="tool-tab" onclick="switchToolTab('dcf',this)">💹 DCF / Παρούσα Αξία</button>
+      <button class="tool-tab" onclick="switchToolTab('breakeven',this)">⚖️ Break-Even</button>
+    </div>
+
+    <!-- DCA SIMULATOR -->
+    <div id="tool-dca" class="tool-panel active">
+      <div class="tool-card">
+        <div class="tool-card-title">Dollar-Cost Averaging Simulator</div>
+        <div class="tool-card-desc">Επενδύστε σταθερό ποσό σε τακτά διαστήματα. Δείτε πώς η συνεπής επένδυση αυξάνει το χαρτοφυλάκιό σας με την πάροδο του χρόνου, ακόμα και σε μεταβλητές αγορές.</div>
+        <div class="tool-inputs">
+          <div class="tool-field">
+            <label class="tool-label">Ποσό ανά περίοδο (€)</label>
+            <input type="number" class="tool-input" id="dca-amount" value="100" min="1">
+          </div>
+          <div class="tool-field">
+            <label class="tool-label">Συχνότητα</label>
+            <select class="tool-select" id="dca-freq">
+              <option value="12">Μηνιαία</option>
+              <option value="52">Εβδομαδιαία</option>
+              <option value="4">Τριμηνιαία</option>
+              <option value="1">Ετήσια</option>
+            </select>
+          </div>
+          <div class="tool-field">
+            <label class="tool-label">Χρόνια επένδυσης</label>
+            <input type="number" class="tool-input" id="dca-years" value="10" min="1" max="50">
+          </div>
+          <div class="tool-field">
+            <label class="tool-label">Ετήσια απόδοση (%)</label>
+            <input type="number" class="tool-input" id="dca-rate" value="12" min="0" step="0.1">
+          </div>
+        </div>
+        <button class="tool-calc-btn" onclick="calcDCA()">⚡ Υπολογισμός</button>
+        <div id="dca-results" class="tool-hidden">
+          <div class="tool-result-grid">
+            <div class="tool-result-card">
+              <div class="tool-result-label">Συνολική Επένδυση</div>
+              <div class="tool-result-value" id="dca-invested">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Τελική Αξία</div>
+              <div class="tool-result-value blue" id="dca-final">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Κέρδος</div>
+              <div class="tool-result-value pos" id="dca-profit">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Απόδοση</div>
+              <div class="tool-result-value pos" id="dca-roi">—</div>
+            </div>
+          </div>
+          <div class="tool-chart-wrap">
+            <canvas id="dca-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPOUND RETURNS -->
+    <div id="tool-compound" class="tool-panel">
+      <div class="tool-card">
+        <div class="tool-card-title">Σύνθετες Αποδόσεις (FV)</div>
+        <div class="tool-card-desc">Υπολογίστε τη μελλοντική αξία μιας εφάπαξ επένδυσης με ανατοκισμό: FV = PV × (1 + r)ⁿ. Δείτε τη δύναμη του compound interest.</div>
+        <div class="tool-inputs">
+          <div class="tool-field">
+            <label class="tool-label">Αρχικό Κεφάλαιο (€)</label>
+            <input type="number" class="tool-input" id="cmp-pv" value="10000" min="1">
+          </div>
+          <div class="tool-field">
+            <label class="tool-label">Ετήσια Απόδοση (%)</label>
+            <input type="number" class="tool-input" id="cmp-rate" value="15" step="0.1">
+          </div>
+          <div class="tool-field">
+            <label class="tool-label">Χρόνια</label>
+            <input type="number" class="tool-input" id="cmp-years" value="10" min="1" max="50">
+          </div>
+          <div class="tool-field">
+            <label class="tool-label">Ανατοκισμός ανά έτος</label>
+            <select class="tool-select" id="cmp-freq">
+              <option value="1">Ετήσια</option>
+              <option value="12" selected>Μηνιαία</option>
+              <option value="52">Εβδομαδιαία</option>
+              <option value="365">Ημερήσια</option>
+            </select>
+          </div>
+        </div>
+        <button class="tool-calc-btn" onclick="calcCompound()">⚡ Υπολογισμός</button>
+        <div id="cmp-results" class="tool-hidden">
+          <div class="tool-result-grid">
+            <div class="tool-result-card">
+              <div class="tool-result-label">Αρχικό Κεφάλαιο</div>
+              <div class="tool-result-value" id="cmp-initial">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Μελλοντική Αξία</div>
+              <div class="tool-result-value blue" id="cmp-fv">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Συνολικό Κέρδος</div>
+              <div class="tool-result-value pos" id="cmp-gain">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Πολλαπλάσιο (x)</div>
+              <div class="tool-result-value pos" id="cmp-mult">—</div>
+            </div>
+          </div>
+          <div class="tool-chart-wrap">
+            <canvas id="cmp-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DCF / PRESENT VALUE -->
+    <div id="tool-dcf" class="tool-panel">
+      <div class="tool-card">
+        <div class="tool-card-title">DCF — Προεξοφλημένη Παρούσα Αξία</div>
+        <div class="tool-card-desc">Πόσο αξίζει σήμερα ένα ποσό που θα λάβετε στο μέλλον; Η προεξόφληση μετράει το πραγματικό κόστος ευκαιρίας: PV = FV ÷ (1 + r)ⁿ</div>
+        <div class="tool-inputs">
+          <div class="tool-field">
+            <label class="tool-label">Μελλοντική Αξία (€)</label>
+            <input type="number" class="tool-input" id="dcf-fv" value="100000" min="1">
+          </div>
+          <div class="tool-field">
+            <label class="tool-label">Προεξοφλητικό Επιτόκιο (%)</label>
+            <input type="number" class="tool-input" id="dcf-rate" value="10" step="0.1">
+          </div>
+          <div class="tool-field">
+            <label class="tool-label">Χρόνια στο μέλλον</label>
+            <input type="number" class="tool-input" id="dcf-years" value="5" min="1" max="50">
+          </div>
+        </div>
+        <button class="tool-calc-btn" onclick="calcDCF()">⚡ Υπολογισμός</button>
+        <div id="dcf-results" class="tool-hidden">
+          <div class="tool-result-grid">
+            <div class="tool-result-card">
+              <div class="tool-result-label">Μελλοντική Αξία</div>
+              <div class="tool-result-value" id="dcf-future">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Παρούσα Αξία (σήμερα)</div>
+              <div class="tool-result-value blue" id="dcf-pv">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Διαφορά (κόστος ευκαιρίας)</div>
+              <div class="tool-result-value neg" id="dcf-diff">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Απαιτούμενη σημερινή επένδυση</div>
+              <div class="tool-result-value pos" id="dcf-req">—</div>
+            </div>
+          </div>
+          <div class="tool-chart-wrap">
+            <canvas id="dcf-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BREAK-EVEN -->
+    <div id="tool-breakeven" class="tool-panel">
+      <div class="tool-card">
+        <div class="tool-card-title">Break-Even Calculator</div>
+        <div class="tool-card-desc">Σε ποια τιμή σπάει το κόστος αγοράς σας; Υπολογίστε την τιμή ισορροπίας λαμβάνοντας υπόψη fees, μέση τιμή αγοράς και στόχο κέρδους.</div>
+        <div class="tool-inputs">
+          <div class="tool-field">
+            <label class="tool-label">Μέση Τιμή Αγοράς (€)</label>
+            <input type="number" class="tool-input" id="be-avg" value="50000" min="0.000001" step="any">
+          </div>
+          <div class="tool-field">
+            <label class="tool-label">Ποσό Επένδυσης (€)</label>
+            <input type="number" class="tool-input" id="be-invested" value="5000" min="1">
+          </div>
+          <div class="tool-field">
+            <label class="tool-label">Συνολικά Fees (%)</label>
+            <input type="number" class="tool-input" id="be-fees" value="0.5" step="0.01" min="0">
+          </div>
+          <div class="tool-field">
+            <label class="tool-label">Στόχος Κέρδους (%)</label>
+            <input type="number" class="tool-input" id="be-target" value="20" step="0.1" min="0">
+          </div>
+        </div>
+        <button class="tool-calc-btn" onclick="calcBreakEven()">⚡ Υπολογισμός</button>
+        <div id="be-results" class="tool-hidden">
+          <div class="tool-result-grid">
+            <div class="tool-result-card">
+              <div class="tool-result-label">Τιμή Break-Even</div>
+              <div class="tool-result-value blue" id="be-breakeven">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Τιμή Στόχου Κέρδους</div>
+              <div class="tool-result-value pos" id="be-profit-price">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Ποσό Κρυπτονομίσματος</div>
+              <div class="tool-result-value" id="be-coins">—</div>
+            </div>
+            <div class="tool-result-card">
+              <div class="tool-result-label">Κέρδος στο στόχο</div>
+              <div class="tool-result-value pos" id="be-profit-eur">—</div>
+            </div>
+          </div>
+          <div class="tool-chart-wrap">
+            <canvas id="be-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <!-- Coin detail modal -->
@@ -890,6 +1158,106 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 </div>
 
 <script>
+// ===================== I18N =====================
+const TRANSLATIONS = {
+  el: {
+    live:'Ζωντανό', menu:'MENU', nav_tagline:'₿ CryptoLive — Πλοήγηση',
+    page_home:'Αρχική', page_market:'Αγορά', page_trending:'Trending',
+    page_gainers:'Κερδισμένοι', page_portfolio:'Χαρτοφυλάκιο',
+    page_converter:'Μετατροπέας', page_tools:'Εργαλεία',
+    home_label:'Αγορά Κρυπτονομισμάτων', home_title:'Crypto Live Prices',
+    home_subtitle:'Ενημερώνεται αυτόματα σε πραγματικό χρόνο',
+    splash_tagline:'Ζωντανές τιμές κρυπτονομισμάτων — σε πραγματικό χρόνο στα ελληνικά',
+    splash_btn:'Ξεκινήστε →',
+    fear_greed:'Δείκτης Φόβου & Απληστίας', trending_now:'🔥 Trending Τώρα',
+    tools_label:'Χρηματοοικονομικά Εργαλεία', tools_title:'Αριθμομηχανές',
+    tools_subtitle:'Υπολογίστε αποδόσεις, προεξοφλήσεις και στρατηγικές επένδυσης σε βάθος χρόνου.',
+    calc_btn:'⚡ Υπολογισμός',
+    tab_dca:'📈 DCA Simulator', tab_compound:'🔢 Σύνθετες Αποδόσεις',
+    tab_dcf:'💹 DCF / Παρούσα Αξία', tab_breakeven:'⚖️ Break-Even',
+    market_label:'Αγορά', market_title:'Κρυπτονομίσματα',
+    converter_label:'Μετατροπέας', converter_title:'Μετατροπέας Νομισμάτων',
+  },
+  en: {
+    live:'Live', menu:'MENU', nav_tagline:'₿ CryptoLive — Navigation',
+    page_home:'Home', page_market:'Market', page_trending:'Trending',
+    page_gainers:'Top Movers', page_portfolio:'Portfolio',
+    page_converter:'Converter', page_tools:'Tools',
+    home_label:'Cryptocurrency Market', home_title:'Crypto Live Prices',
+    home_subtitle:'Updated automatically in real time',
+    splash_tagline:'Live cryptocurrency prices — updated in real time',
+    splash_btn:'Get Started →',
+    fear_greed:'Fear & Greed Index', trending_now:'🔥 Trending Now',
+    tools_label:'Financial Tools', tools_title:'Calculators',
+    tools_subtitle:'Calculate returns, discounts and investment strategies over time.',
+    calc_btn:'⚡ Calculate',
+    tab_dca:'📈 DCA Simulator', tab_compound:'🔢 Compound Returns',
+    tab_dcf:'💹 DCF / Present Value', tab_breakeven:'⚖️ Break-Even',
+    market_label:'Market', market_title:'Cryptocurrencies',
+    converter_label:'Converter', converter_title:'Currency Converter',
+  },
+  fr: {
+    live:'En direct', menu:'MENU', nav_tagline:'₿ CryptoLive — Navigation',
+    page_home:'Accueil', page_market:'Marché', page_trending:'Tendances',
+    page_gainers:'Gagnants', page_portfolio:'Portefeuille',
+    page_converter:'Convertisseur', page_tools:'Outils',
+    home_label:'Marché des Cryptomonnaies', home_title:'Crypto Prix en Direct',
+    home_subtitle:'Mis à jour automatiquement en temps réel',
+    splash_tagline:'Prix des cryptomonnaies en direct — en temps réel',
+    splash_btn:'Commencer →',
+    fear_greed:'Indice Peur & Avidité', trending_now:'🔥 Tendances du Moment',
+    tools_label:'Outils Financiers', tools_title:'Calculatrices',
+    tools_subtitle:'Calculez les rendements, les actualisations et les stratégies d\'investissement.',
+    calc_btn:'⚡ Calculer',
+    tab_dca:'📈 Simulateur DCA', tab_compound:'🔢 Rendements Composés',
+    tab_dcf:'💹 DCF / Valeur Actuelle', tab_breakeven:'⚖️ Seuil de Rentabilité',
+    market_label:'Marché', market_title:'Cryptomonnaies',
+    converter_label:'Convertisseur', converter_title:'Convertisseur de Devises',
+  },
+  de: {
+    live:'Live', menu:'MENÜ', nav_tagline:'₿ CryptoLive — Navigation',
+    page_home:'Startseite', page_market:'Markt', page_trending:'Trending',
+    page_gainers:'Gewinner', page_portfolio:'Portfolio',
+    page_converter:'Umrechner', page_tools:'Werkzeuge',
+    home_label:'Kryptowährungsmarkt', home_title:'Crypto Live-Preise',
+    home_subtitle:'Wird automatisch in Echtzeit aktualisiert',
+    splash_tagline:'Live-Kryptowährungspreise — in Echtzeit aktualisiert',
+    splash_btn:'Loslegen →',
+    fear_greed:'Angst & Gier Index', trending_now:'🔥 Trending Jetzt',
+    tools_label:'Finanztools', tools_title:'Rechner',
+    tools_subtitle:'Berechnen Sie Renditen, Abzinsungen und Anlagestrategien über die Zeit.',
+    calc_btn:'⚡ Berechnen',
+    tab_dca:'📈 DCA-Simulator', tab_compound:'🔢 Zinseszins',
+    tab_dcf:'💹 DCF / Barwert', tab_breakeven:'⚖️ Gewinnschwelle',
+    market_label:'Markt', market_title:'Kryptowährungen',
+    converter_label:'Umrechner', converter_title:'Währungsumrechner',
+  }
+};
+
+let currentLang = localStorage.getItem('cryptolive_lang') || 'el';
+
+function t(key) {
+  return (TRANSLATIONS[currentLang] || TRANSLATIONS.el)[key] || TRANSLATIONS.el[key] || key;
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('cryptolive_lang', lang);
+  const langMap = {el:'ΕΛ', en:'EN', fr:'FR', de:'DE'};
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim() === langMap[lang]);
+  });
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = t(key);
+    if (val) el.textContent = val;
+  });
+  // Update tabs
+  const tabs = document.querySelectorAll('.tool-tab');
+  const tabKeys = ['tab_dca','tab_compound','tab_dcf','tab_breakeven'];
+  tabs.forEach((tab, i) => { if (tabKeys[i]) tab.textContent = t(tabKeys[i]); });
+}
+
 // ===================== CONSTANTS =====================
 const COINS = ['bitcoin','ethereum','tether','binancecoin','solana','ripple','usd-coin','staked-ether','dogecoin','cardano','avalanche-2','chainlink','tron','polkadot','shiba-inu','matic-network','litecoin','bitcoin-cash','near','uniswap'];
 const HERO_COINS = ['bitcoin','ethereum','solana','binancecoin'];
@@ -1201,6 +1569,7 @@ function showPage(name) {
     if (name === 'portfolio') renderHoldings();
     if (name === 'converter') initConverter();
     if (name === 'market') renderMarketGrid();
+    if (name === 'tools') initToolsPage();
     initScrollReveal();
   }, 200);
 }
@@ -1916,6 +2285,7 @@ function refreshData() {
 
 // ===================== INIT =====================
 async function init() {
+  setLang(currentLang);
   initParticles();
   initSupabase();
 
@@ -1953,6 +2323,203 @@ async function init() {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModalDirect();
 });
+
+// ===================== TOOLS PAGE =====================
+let toolCharts = {};
+
+function initToolsPage() { /* nothing to preload */ }
+
+function switchToolTab(name, btn) {
+  document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tool-' + name)?.classList.add('active');
+}
+
+function fmtEur(v) {
+  if (isNaN(v)) return '—';
+  if (v >= 1e9) return '€' + (v/1e9).toFixed(3) + 'B';
+  if (v >= 1e6) return '€' + (v/1e6).toFixed(3) + 'M';
+  if (v >= 1000) return '€' + v.toLocaleString('el-GR', {minimumFractionDigits:2,maximumFractionDigits:2});
+  return '€' + v.toFixed(2);
+}
+
+function destroyChart(id) {
+  if (toolCharts[id]) { toolCharts[id].destroy(); delete toolCharts[id]; }
+}
+
+function makeLineChart(id, labels, datasets, yLabel) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  toolCharts[id] = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: '#8899bb', font: { family: 'Inter', size: 12 } } },
+        tooltip: { backgroundColor: 'rgba(4,7,15,0.95)', borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1, titleColor: '#f0f4ff', bodyColor: '#8899bb',
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: €${ctx.parsed.y.toLocaleString('el-GR',{minimumFractionDigits:2,maximumFractionDigits:2})}` }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#6b7a99', maxTicksLimit: 8, font:{size:11} }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color: '#6b7a99', callback: v => fmtEur(v), font:{size:11} }, grid: { color: 'rgba(255,255,255,0.06)' }, title: { display:!!yLabel, text:yLabel, color:'#6b7a99' } }
+      }
+    }
+  });
+}
+
+// DCA Simulator
+function calcDCA() {
+  const amount = parseFloat(document.getElementById('dca-amount').value) || 0;
+  const freq = parseInt(document.getElementById('dca-freq').value) || 12;
+  const years = parseInt(document.getElementById('dca-years').value) || 10;
+  const annualRate = parseFloat(document.getElementById('dca-rate').value) / 100;
+  if (amount <= 0 || years <= 0) return;
+
+  const r = annualRate / freq;
+  const n = freq * years;
+  const fv = r === 0 ? amount * n : amount * ((Math.pow(1 + r, n) - 1) / r);
+  const invested = amount * n;
+  const profit = fv - invested;
+  const roi = (profit / invested) * 100;
+
+  document.getElementById('dca-invested').textContent = fmtEur(invested);
+  document.getElementById('dca-final').textContent = fmtEur(fv);
+  document.getElementById('dca-profit').textContent = '+' + fmtEur(profit);
+  document.getElementById('dca-roi').textContent = '+' + roi.toFixed(1) + '%';
+  document.getElementById('dca-results').classList.remove('tool-hidden');
+
+  // Build chart data year by year
+  const labels = [], investedData = [], valueData = [];
+  for (let y = 0; y <= years; y++) {
+    const ni = freq * y;
+    const fvi = r === 0 ? amount * ni : amount * ((Math.pow(1 + r, ni) - 1) / r);
+    labels.push('Έτος ' + y);
+    investedData.push(parseFloat((amount * ni).toFixed(2)));
+    valueData.push(parseFloat(fvi.toFixed(2)));
+  }
+  makeLineChart('dca-chart', labels, [
+    { label: 'Επένδυση', data: investedData, borderColor: '#6b7a99', backgroundColor: 'rgba(107,122,153,0.08)', fill: true, tension: 0.3, pointRadius: 3 },
+    { label: 'Αξία Χαρτοφυλακίου', data: valueData, borderColor: '#00d4ff', backgroundColor: 'rgba(0,212,255,0.08)', fill: true, tension: 0.3, pointRadius: 3 }
+  ]);
+}
+
+// Compound Returns
+function calcCompound() {
+  const pv = parseFloat(document.getElementById('cmp-pv').value) || 0;
+  const annualRate = parseFloat(document.getElementById('cmp-rate').value) / 100;
+  const years = parseInt(document.getElementById('cmp-years').value) || 10;
+  const n = parseInt(document.getElementById('cmp-freq').value) || 12;
+  if (pv <= 0) return;
+
+  const fv = pv * Math.pow(1 + annualRate / n, n * years);
+  const gain = fv - pv;
+  const mult = fv / pv;
+
+  document.getElementById('cmp-initial').textContent = fmtEur(pv);
+  document.getElementById('cmp-fv').textContent = fmtEur(fv);
+  document.getElementById('cmp-gain').textContent = '+' + fmtEur(gain);
+  document.getElementById('cmp-mult').textContent = mult.toFixed(2) + 'x';
+  document.getElementById('cmp-results').classList.remove('tool-hidden');
+
+  const labels = [], valData = [], simpleData = [];
+  for (let y = 0; y <= years; y++) {
+    labels.push('Έτος ' + y);
+    valData.push(parseFloat((pv * Math.pow(1 + annualRate/n, n*y)).toFixed(2)));
+    simpleData.push(parseFloat((pv * (1 + annualRate * y)).toFixed(2)));
+  }
+  makeLineChart('cmp-chart', labels, [
+    { label: 'Απλό Επιτόκιο', data: simpleData, borderColor: '#6b7a99', backgroundColor: 'rgba(107,122,153,0.06)', fill: true, tension: 0.3, pointRadius: 3, borderDash: [6,4] },
+    { label: 'Ανατοκισμός', data: valData, borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', fill: true, tension: 0.3, pointRadius: 3 }
+  ]);
+}
+
+// DCF / Present Value
+function calcDCF() {
+  const fv = parseFloat(document.getElementById('dcf-fv').value) || 0;
+  const rate = parseFloat(document.getElementById('dcf-rate').value) / 100;
+  const years = parseInt(document.getElementById('dcf-years').value) || 5;
+  if (fv <= 0) return;
+
+  const pv = fv / Math.pow(1 + rate, years);
+  const diff = fv - pv;
+
+  document.getElementById('dcf-future').textContent = fmtEur(fv);
+  document.getElementById('dcf-pv').textContent = fmtEur(pv);
+  document.getElementById('dcf-diff').textContent = '-' + fmtEur(diff);
+  document.getElementById('dcf-req').textContent = fmtEur(pv);
+  document.getElementById('dcf-results').classList.remove('tool-hidden');
+
+  const labels = [], pvData = [], nomData = [];
+  for (let y = 0; y <= years; y++) {
+    labels.push('Έτος ' + y);
+    pvData.push(parseFloat((fv / Math.pow(1 + rate, years - y)).toFixed(2)));
+    nomData.push(parseFloat(fv.toFixed(2)));
+  }
+  makeLineChart('dcf-chart', labels, [
+    { label: 'Ονομαστική Αξία', data: nomData, borderColor: '#6b7a99', backgroundColor: 'transparent', fill: false, tension: 0, pointRadius: 0, borderDash: [6,4] },
+    { label: 'Παρούσα Αξία (DCF)', data: pvData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3, pointRadius: 3 }
+  ]);
+}
+
+// Break-Even
+function calcBreakEven() {
+  const avgPrice = parseFloat(document.getElementById('be-avg').value) || 0;
+  const invested = parseFloat(document.getElementById('be-invested').value) || 0;
+  const feePct = parseFloat(document.getElementById('be-fees').value) / 100;
+  const targetPct = parseFloat(document.getElementById('be-target').value) / 100;
+  if (avgPrice <= 0 || invested <= 0) return;
+
+  const totalCost = invested * (1 + feePct);
+  const coins = invested / avgPrice;
+  const breakEvenPrice = totalCost / coins;
+  const targetPrice = breakEvenPrice * (1 + targetPct);
+  const profitAtTarget = coins * targetPrice - totalCost;
+
+  document.getElementById('be-breakeven').textContent = fmtEur(breakEvenPrice);
+  document.getElementById('be-profit-price').textContent = fmtEur(targetPrice);
+  document.getElementById('be-coins').textContent = coins.toLocaleString('el-GR', {maximumFractionDigits:8});
+  document.getElementById('be-profit-eur').textContent = '+' + fmtEur(profitAtTarget);
+  document.getElementById('be-results').classList.remove('tool-hidden');
+
+  // Chart: P&L at various prices
+  const points = 20;
+  const minP = breakEvenPrice * 0.5;
+  const maxP = targetPrice * 1.5;
+  const step = (maxP - minP) / points;
+  const labels = [], pnlData = [], colors = [];
+  for (let i = 0; i <= points; i++) {
+    const p = minP + i * step;
+    const pnl = coins * p - totalCost;
+    labels.push(fmtEur(p));
+    pnlData.push(parseFloat(pnl.toFixed(2)));
+    colors.push(pnl >= 0 ? 'rgba(0,230,118,0.7)' : 'rgba(255,61,87,0.7)');
+  }
+  destroyChart('be-chart');
+  const ctx = document.getElementById('be-chart');
+  if (!ctx) return;
+  toolCharts['be-chart'] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'Κέρδος/Ζημιά (€)', data: pnlData, backgroundColor: colors, borderRadius: 4 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#8899bb', font: { family: 'Inter', size: 12 } } },
+        tooltip: { backgroundColor: 'rgba(4,7,15,0.95)', borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1, titleColor: '#f0f4ff', bodyColor: '#8899bb',
+          callbacks: { label: ctx => ` P&L: €${ctx.parsed.y.toLocaleString('el-GR',{minimumFractionDigits:2,maximumFractionDigits:2})}` }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#6b7a99', maxTicksLimit: 6, font:{size:10} }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color: '#6b7a99', callback: v => fmtEur(v), font:{size:11} }, grid: { color: 'rgba(255,255,255,0.06)' } }
+      }
+    }
+  });
+}
 
 document.addEventListener('DOMContentLoaded', init);
 </script>
