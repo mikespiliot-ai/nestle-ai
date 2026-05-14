@@ -145,15 +145,6 @@ nav {
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   text-decoration:none;cursor:pointer;margin-right:32px;white-space:nowrap;
 }
-.nav-links { display:flex;align-items:center;gap:4px;flex:1; }
-.nav-link {
-  padding:8px 14px;border-radius:8px;color:var(--muted2);font-size:14px;font-weight:500;
-  cursor:pointer;transition:all 0.2s;white-space:nowrap;border:none;background:none;
-  font-family:'Inter',sans-serif;
-}
-.nav-link:hover { color:var(--text);background:var(--surface2); }
-.nav-link.active { color:var(--blue);background:rgba(0,212,255,0.08); }
-
 .nav-right { display:flex;align-items:center;gap:12px;margin-left:auto; }
 .live-dot { width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse-dot 2s ease-in-out infinite; }
 @keyframes pulse-dot { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:0.5;transform:scale(0.8); } }
@@ -165,27 +156,101 @@ nav {
 }
 .btn-refresh:hover { background:var(--surface3);border-color:var(--blue);color:var(--blue); }
 
-.hamburger { display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none; }
-.hamburger span { width:22px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s;display:block; }
-
-.mobile-menu {
-  display:none;position:fixed;top:96px;left:0;right:0;
-  background:rgba(4,7,15,0.98);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);z-index:899;
-  flex-direction:column;padding:12px;gap:4px;
+/* ===== NAV MENU BUTTON ===== */
+.nav-menu-btn {
+  display:flex;align-items:center;gap:10px;
+  padding:10px 20px;border-radius:10px;border:1px solid var(--border2);
+  background:var(--surface2);color:var(--text);
+  font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:2px;cursor:pointer;transition:all 0.25s;
+  margin-left:16px;
 }
-.mobile-menu.open { display:flex; }
-.mobile-menu .nav-link { width:100%;text-align:left;padding:12px 16px; }
+.nav-menu-btn:hover { background:var(--surface3);border-color:var(--blue);color:var(--blue); }
+.nav-menu-btn .nmb-lines { display:flex;flex-direction:column;gap:4px; }
+.nav-menu-btn .nmb-lines span { display:block;width:18px;height:2px;background:currentColor;border-radius:2px;transition:all 0.3s; }
+.nav-menu-btn.open .nmb-lines span:nth-child(1) { transform:translateY(6px) rotate(45deg); }
+.nav-menu-btn.open .nmb-lines span:nth-child(2) { opacity:0;transform:scaleX(0); }
+.nav-menu-btn.open .nmb-lines span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }
+
+/* ===== OVERLAY MENU ===== */
+.menu-overlay {
+  position:fixed;inset:0;z-index:950;
+  background:rgba(4,7,15,0.97);backdrop-filter:blur(30px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.4s ease;
+}
+.menu-overlay.open { opacity:1;pointer-events:all; }
+
+.menu-overlay-close {
+  position:absolute;top:28px;right:28px;
+  width:48px;height:48px;border-radius:50%;
+  border:1px solid var(--border2);background:var(--surface2);
+  color:var(--text);font-size:20px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.3s;
+}
+.menu-overlay-close:hover { background:rgba(255,61,87,0.12);border-color:var(--red);color:var(--red);transform:rotate(90deg); }
+
+.menu-overlay-inner { text-align:center; }
+.menu-overlay-tagline { font-size:12px;font-weight:600;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:48px; }
+
+.menu-overlay-links { display:flex;flex-direction:column;align-items:center;gap:8px; }
+
+.mol-link {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(32px,6vw,68px);font-weight:800;
+  color:var(--muted);background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:24px;letter-spacing:-2px;
+  padding:6px 32px;border-radius:16px;
+  opacity:0;transform:translateY(40px);
+  transition:opacity 0.5s ease, transform 0.5s ease, color 0.2s;
+  white-space:nowrap;position:relative;overflow:hidden;
+}
+.menu-overlay.open .mol-link { opacity:1;transform:translateY(0); }
+.menu-overlay.open .mol-link:nth-child(1) { transition-delay:0.08s; }
+.menu-overlay.open .mol-link:nth-child(2) { transition-delay:0.14s; }
+.menu-overlay.open .mol-link:nth-child(3) { transition-delay:0.20s; }
+.menu-overlay.open .mol-link:nth-child(4) { transition-delay:0.26s; }
+.menu-overlay.open .mol-link:nth-child(5) { transition-delay:0.32s; }
+.menu-overlay.open .mol-link:nth-child(6) { transition-delay:0.38s; }
+
+.mol-link:hover {
+  background:linear-gradient(135deg,#00d4ff,#a855f7);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.mol-link.mol-active {
+  background:linear-gradient(135deg,#00d4ff,#a855f7);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.mol-num {
+  font-size:13px;font-weight:600;letter-spacing:3px;
+  color:var(--muted);-webkit-text-fill-color:var(--muted);
+  font-family:'Inter',sans-serif;min-width:32px;
+}
 
 /* ===== MAIN ===== */
 main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 
 .page {
   display:none;padding:32px 24px;max-width:1280px;margin:0 auto;
-  animation:page-in 0.4s ease;
 }
 .page.active { display:block; }
-@keyframes page-in { from { opacity:0;transform:translateY(16px); } to { opacity:1;transform:translateY(0); } }
+.page.p-exit {
+  display:block;pointer-events:none;
+  animation:page3d-exit 0.5s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+.page.p-enter {
+  display:block;
+  animation:page3d-enter 0.5s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+@keyframes page3d-exit {
+  0%   { opacity:1;transform:perspective(1200px) rotateY(0deg) scale(1) translateX(0); }
+  100% { opacity:0;transform:perspective(1200px) rotateY(-30deg) scale(0.88) translateX(-6%); }
+}
+@keyframes page3d-enter {
+  0%   { opacity:0;transform:perspective(1200px) rotateY(30deg) scale(0.88) translateX(6%); }
+  100% { opacity:1;transform:perspective(1200px) rotateY(0deg) scale(1) translateX(0); }
+}
 
 /* ===== STATS BAR ===== */
 .stats-bar { display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap; }
@@ -515,8 +580,6 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 }
 @media (max-width:768px) {
   nav { padding:0 16px; }
-  .nav-links { display:none; }
-  .hamburger { display:flex; }
   .nav-right .live-label { display:none; }
   .bottom-grid { grid-template-columns:1fr; }
   .gl-grid { grid-template-columns:1fr; }
@@ -577,32 +640,31 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
 <!-- Navigation -->
 <nav id="main-nav">
   <span class="nav-logo" onclick="showPage('home')">₿ CryptoLive</span>
-  <div class="nav-links">
-    <button class="nav-link active" onclick="showPage('home')">Αρχική</button>
-    <button class="nav-link" onclick="showPage('market')">Αγορά</button>
-    <button class="nav-link" onclick="showPage('trending')">Trending</button>
-    <button class="nav-link" onclick="showPage('gainers')">Κερδισμένοι</button>
-    <button class="nav-link" onclick="showPage('portfolio')">Χαρτοφυλάκιο</button>
-    <button class="nav-link" onclick="showPage('converter')">Μετατροπέας</button>
-  </div>
   <div class="nav-right">
     <div class="live-dot"></div>
     <span class="live-label">Ζωντανό</span>
     <button class="btn-refresh" id="refresh-btn" onclick="refreshData()">↻ Ανανέωση</button>
   </div>
-  <button class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Μενού">
-    <span></span><span></span><span></span>
+  <button class="nav-menu-btn" id="nav-menu-btn" onclick="openMenuOverlay()" aria-label="Μενού">
+    <div class="nmb-lines"><span></span><span></span><span></span></div>
+    MENU
   </button>
 </nav>
 
-<!-- Mobile menu -->
-<div class="mobile-menu" id="mobile-menu">
-  <button class="nav-link" onclick="showPage('home');closeMobileMenu()">Αρχική</button>
-  <button class="nav-link" onclick="showPage('market');closeMobileMenu()">Αγορά</button>
-  <button class="nav-link" onclick="showPage('trending');closeMobileMenu()">Trending</button>
-  <button class="nav-link" onclick="showPage('gainers');closeMobileMenu()">Κερδισμένοι</button>
-  <button class="nav-link" onclick="showPage('portfolio');closeMobileMenu()">Χαρτοφυλάκιο</button>
-  <button class="nav-link" onclick="showPage('converter');closeMobileMenu()">Μετατροπέας</button>
+<!-- Fullscreen overlay menu -->
+<div class="menu-overlay" id="menu-overlay" onclick="handleOverlayClick(event)">
+  <button class="menu-overlay-close" onclick="closeMenuOverlay()">✕</button>
+  <div class="menu-overlay-inner">
+    <div class="menu-overlay-tagline">₿ CryptoLive — Πλοήγηση</div>
+    <div class="menu-overlay-links">
+      <button class="mol-link mol-active" data-page="home" onclick="showPage('home')"><span class="mol-num">01</span>Αρχική</button>
+      <button class="mol-link" data-page="market" onclick="showPage('market')"><span class="mol-num">02</span>Αγορά</button>
+      <button class="mol-link" data-page="trending" onclick="showPage('trending')"><span class="mol-num">03</span>Trending</button>
+      <button class="mol-link" data-page="gainers" onclick="showPage('gainers')"><span class="mol-num">04</span>Κερδισμένοι</button>
+      <button class="mol-link" data-page="portfolio" onclick="showPage('portfolio')"><span class="mol-num">05</span>Χαρτοφυλάκιο</button>
+      <button class="mol-link" data-page="converter" onclick="showPage('converter')"><span class="mol-num">06</span>Μετατροπέας</button>
+    </div>
+  </div>
 </div>
 
 <!-- Main content -->
@@ -1082,32 +1144,58 @@ function hideSplash() {
   setTimeout(() => { splash.style.display = 'none'; }, 800);
 }
 
-// ===================== NAV =====================
-const pageNavMap = {
-  home: 'Αρχική', market: 'Αγορά', trending: 'Trending',
-  gainers: 'Κερδισμένοι', portfolio: 'Χαρτοφυλάκιο', converter: 'Μετατροπέας'
-};
+// ===================== NAV & MENU OVERLAY =====================
+let currentPage = 'home';
+
+function openMenuOverlay() {
+  document.getElementById('menu-overlay').classList.add('open');
+  document.getElementById('nav-menu-btn').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMenuOverlay() {
+  document.getElementById('menu-overlay').classList.remove('open');
+  document.getElementById('nav-menu-btn').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('menu-overlay')) closeMenuOverlay();
+}
 
 function showPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const page = document.getElementById('page-' + name);
-  if (page) page.classList.add('active');
-  document.querySelectorAll('.nav-link').forEach(l => {
-    l.classList.toggle('active', l.textContent.trim() === pageNavMap[name]);
+  if (name === currentPage) { closeMenuOverlay(); return; }
+
+  const current = document.getElementById('page-' + currentPage);
+  const next = document.getElementById('page-' + name);
+  if (!next) return;
+
+  // Update overlay active link
+  document.querySelectorAll('.mol-link').forEach(l => {
+    l.classList.toggle('mol-active', l.dataset.page === name);
   });
+
+  closeMenuOverlay();
+
+  // 3D transition
+  if (current) {
+    current.classList.add('p-exit');
+    current.classList.remove('active');
+    setTimeout(() => current.classList.remove('p-exit'), 500);
+  }
+
+  next.classList.add('active', 'p-enter');
+  setTimeout(() => next.classList.remove('p-enter'), 500);
+
+  currentPage = name;
+
   if (name === 'trending') loadTrendingPage();
   if (name === 'gainers') renderGainersLosers();
-  if (name === 'portfolio') { renderHoldings(); }
+  if (name === 'portfolio') renderHoldings();
   if (name === 'converter') initConverter();
   if (name === 'market') renderMarketGrid();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   initScrollReveal();
-}
-
-function toggleMobileMenu() {
-  document.getElementById('mobile-menu').classList.toggle('open');
-}
-function closeMobileMenu() {
-  document.getElementById('mobile-menu').classList.remove('open');
 }
 
 // ===================== RIPPLE =====================
