@@ -688,8 +688,6 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
   <div class="lang-switcher">
     <button class="lang-btn active" onclick="setLang('el')">ΕΛ</button>
     <button class="lang-btn" onclick="setLang('en')">EN</button>
-    <button class="lang-btn" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" onclick="setLang('de')">DE</button>
   </div>
   <button class="nav-menu-btn" id="nav-menu-btn" onclick="openMenuOverlay()" aria-label="Μενού">
     <div class="nmb-lines"><span></span><span></span><span></span></div>
@@ -1311,156 +1309,6 @@ const TRANSLATIONS = {
     be_coins_lbl:'Coin Amount', be_profit_eur_lbl:'Profit at target',
     be_chart_pnl:'Profit/Loss (€)',
     year_lbl:'Year',
-  },
-  fr: {
-    live:'En direct', menu:'MENU', nav_tagline:'₿ CryptoLive — Navigation',
-    page_home:'Accueil', page_market:'Marché', page_trending:'Tendances',
-    page_gainers:'Gagnants', page_portfolio:'Portefeuille',
-    page_converter:'Convertisseur', page_tools:'Outils',
-    home_label:'Marché des Cryptomonnaies', home_title:'Crypto Prix en Direct',
-    home_subtitle:'Mis à jour automatiquement en temps réel',
-    splash_tagline:'Prix des cryptomonnaies en direct — en temps réel',
-    splash_btn:'Commencer →',
-    fear_greed:'Indice Peur & Avidité', trending_now:'🔥 Tendances du Moment',
-    tools_label:'Outils Financiers', tools_title:'Calculatrices',
-    tools_subtitle:'Calculez les rendements, les actualisations et les stratégies d\'investissement.',
-    calc_btn:'⚡ Calculer',
-    tab_dca:'📈 DCA Simulator', tab_compound:'🔢 Rendements Composés',
-    tab_dcf:'💹 DCF / Valeur Actuelle', tab_breakeven:'⚖️ Break-Even',
-    market_label:'Marché', market_title:'Cryptomonnaies',
-    converter_label:'Convertisseur', converter_title:'Convertisseur de Devises',
-    mkt_title:'Marché des Cryptomonnaies', mkt_subtitle:'Prix et statistiques pour les 20 meilleures cryptos',
-    mkt_search_ph:'Rechercher une monnaie...',
-    sort_cap:'Capitalisation', sort_price:'Prix', sort_change:'24h%', sort_volume:'Volume',
-    no_coins:'Aucune monnaie trouvée', no_coins_sub:'Essayez un autre terme',
-    trend_title:'🔥 Cryptos Tendance', trend_subtitle:'Les cryptomonnaies les plus populaires en ce moment',
-    gl_title:'Gagnants & Perdants', gl_subtitle:'Plus grands mouvements des dernières 24 heures',
-    gl_gainers_hdr:'Top 8 Gagnants', gl_losers_hdr:'Top 8 Perdants',
-    loading:'Chargement...',
-    port_title:'Portefeuille', port_subtitle:'Suivez vos investissements',
-    synced:'✓ Synchronisé',
-    add_position:'➕ Ajouter Position',
-    form_coin:'Monnaie', form_amount:'Quantité', form_buy_price:'Prix d\'achat (€)',
-    form_ph_amount:'p.ex. 0.5', form_ph_price:'p.ex. 30000',
-    btn_add:'Ajouter au Portefeuille',
-    chart_dist:'Répartition du Portefeuille',
-    chart_add_coins:'Ajoutez des monnaies pour voir la répartition',
-    my_positions:'Mes Positions',
-    empty_port:'Pas encore de positions', empty_port_sub:'Ajoutez votre première monnaie depuis le formulaire',
-    total_value_label:'Valeur Totale', total_pnl_label:'P&L Total', positions_label:'Positions',
-    conv_title:'Convertisseur de Devises',
-    conv_subtitle:'Convertissez entre cryptomonnaies et monnaies fiat en temps réel',
-    conv_from_label:'De', conv_to_label:'Vers', conv_result_label:'Résultat',
-    err_load:'Échec du chargement des données', err_conn:'Vérifiez votre connexion',
-    btn_retry:'↻ Réessayer', err_no_trend:'Échec du chargement',
-    fng_extreme_fear:'Peur Extrême', fng_fear:'Peur', fng_neutral:'Neutre',
-    fng_greed:'Avidité', fng_extreme_greed:'Avidité Extrême',
-    dca_title:'Dollar-Cost Averaging Simulator',
-    dca_desc:'Investissez un montant fixe à intervalles réguliers. Voyez comment un investissement régulier fait croître votre portefeuille.',
-    dca_amount_lbl:'Montant par période (€)', dca_freq_lbl:'Fréquence',
-    dca_years_lbl:'Années d\'investissement', dca_rate_lbl:'Rendement Annuel (%)',
-    dca_monthly:'Mensuel', dca_weekly:'Hebdomadaire', dca_quarterly:'Trimestriel', dca_yearly:'Annuel',
-    dca_invested_lbl:'Investissement Total', dca_final_lbl:'Valeur Finale',
-    dca_profit_lbl:'Bénéfice', dca_roi_lbl:'Rendement',
-    dca_chart_invested:'Investi', dca_chart_value:'Valeur du Portefeuille',
-    cmp_title:'Rendements Composés (FV)',
-    cmp_desc:'Calculez la valeur future d\'un investissement unique avec composition: FV = PV × (1 + r)ⁿ.',
-    cmp_pv_lbl:'Capital Initial (€)', cmp_rate_lbl:'Rendement Annuel (%)',
-    cmp_years_lbl:'Années', cmp_freq_lbl:'Composition par an',
-    cmp_annual:'Annuel', cmp_monthly:'Mensuel', cmp_weekly:'Hebdomadaire', cmp_daily:'Quotidien',
-    cmp_initial_lbl:'Capital Initial', cmp_fv_lbl:'Valeur Future',
-    cmp_gain_lbl:'Gain Total', cmp_mult_lbl:'Multiple (x)',
-    cmp_chart_simple:'Intérêt Simple', cmp_chart_compound:'Intérêts Composés',
-    dcf_title:'DCF — Valeur Actuelle Nette',
-    dcf_desc:'Combien vaut aujourd\'hui une somme future? La valeur actualisée mesure le coût d\'opportunité réel: PV = FV ÷ (1 + r)ⁿ',
-    dcf_fv_lbl:'Valeur Future (€)', dcf_rate_lbl:'Taux d\'actualisation (%)',
-    dcf_years_lbl:'Années dans le futur',
-    dcf_future_lbl:'Valeur Future', dcf_pv_lbl:'Valeur Actuelle (aujourd\'hui)',
-    dcf_diff_lbl:'Différence (coût d\'opportunité)', dcf_req_lbl:'Investissement requis aujourd\'hui',
-    dcf_chart_nominal:'Valeur Nominale', dcf_chart_pv:'Valeur Actuelle (DCF)',
-    be_title:'Break-Even Calculator',
-    be_desc:'À quel prix votre coût d\'achat atteint-il le seuil de rentabilité?',
-    be_avg_lbl:'Prix d\'achat moyen (€)', be_invested_lbl:'Montant investi (€)',
-    be_fees_lbl:'Frais totaux (%)', be_target_lbl:'Objectif de profit (%)',
-    be_breakeven_lbl:'Prix Seuil de Rentabilité', be_profit_price_lbl:'Prix Objectif de Profit',
-    be_coins_lbl:'Montant de Cryptomonnaie', be_profit_eur_lbl:'Bénéfice à l\'objectif',
-    be_chart_pnl:'Bénéfice/Perte (€)',
-    year_lbl:'Année',
-  },
-  de: {
-    live:'Live', menu:'MENÜ', nav_tagline:'₿ CryptoLive — Navigation',
-    page_home:'Startseite', page_market:'Markt', page_trending:'Trending',
-    page_gainers:'Gewinner', page_portfolio:'Portfolio',
-    page_converter:'Umrechner', page_tools:'Werkzeuge',
-    home_label:'Kryptowährungsmarkt', home_title:'Crypto Live-Preise',
-    home_subtitle:'Wird automatisch in Echtzeit aktualisiert',
-    splash_tagline:'Live-Kryptowährungspreise — in Echtzeit aktualisiert',
-    splash_btn:'Loslegen →',
-    fear_greed:'Angst & Gier Index', trending_now:'🔥 Trending Jetzt',
-    tools_label:'Finanztools', tools_title:'Rechner',
-    tools_subtitle:'Berechnen Sie Renditen, Abzinsungen und Anlagestrategien über die Zeit.',
-    calc_btn:'⚡ Berechnen',
-    tab_dca:'📈 DCA Simulator', tab_compound:'🔢 Zinseszins',
-    tab_dcf:'💹 DCF / Barwert', tab_breakeven:'⚖️ Break-Even',
-    market_label:'Markt', market_title:'Kryptowährungen',
-    converter_label:'Umrechner', converter_title:'Währungsumrechner',
-    mkt_title:'Kryptowährungsmarkt', mkt_subtitle:'Preise und Statistiken für die Top 20 Coins',
-    mkt_search_ph:'Coin suchen...',
-    sort_cap:'Marktkapitalisierung', sort_price:'Preis', sort_change:'24h%', sort_volume:'Volumen',
-    no_coins:'Keine Coins gefunden', no_coins_sub:'Versuchen Sie einen anderen Begriff',
-    trend_title:'🔥 Trending Coins', trend_subtitle:'Die beliebtesten Kryptowährungen gerade jetzt',
-    gl_title:'Gewinner & Verlierer', gl_subtitle:'Größte Bewegungen der letzten 24 Stunden',
-    gl_gainers_hdr:'Top 8 Gewinner', gl_losers_hdr:'Top 8 Verlierer',
-    loading:'Laden...',
-    port_title:'Portfolio', port_subtitle:'Ihre Investitionen verfolgen',
-    synced:'✓ Synchronisiert',
-    add_position:'➕ Position Hinzufügen',
-    form_coin:'Coin', form_amount:'Menge', form_buy_price:'Kaufpreis (€)',
-    form_ph_amount:'z.B. 0.5', form_ph_price:'z.B. 30000',
-    btn_add:'Zum Portfolio hinzufügen',
-    chart_dist:'Portfolio-Verteilung',
-    chart_add_coins:'Fügen Sie Coins hinzu um die Verteilung zu sehen',
-    my_positions:'Meine Positionen',
-    empty_port:'Noch keine Positionen', empty_port_sub:'Fügen Sie Ihren ersten Coin über das Formular hinzu',
-    total_value_label:'Gesamtwert', total_pnl_label:'Gesamt P&L', positions_label:'Positionen',
-    conv_title:'Währungsumrechner',
-    conv_subtitle:'Konvertieren Sie zwischen Kryptowährungen und Fiat in Echtzeit',
-    conv_from_label:'Von', conv_to_label:'Nach', conv_result_label:'Ergebnis',
-    err_load:'Fehler beim Laden der Daten', err_conn:'Überprüfen Sie Ihre Verbindung',
-    btn_retry:'↻ Wiederholen', err_no_trend:'Laden fehlgeschlagen',
-    fng_extreme_fear:'Extreme Angst', fng_fear:'Angst', fng_neutral:'Neutral',
-    fng_greed:'Gier', fng_extreme_greed:'Extreme Gier',
-    dca_title:'Dollar-Cost Averaging Simulator',
-    dca_desc:'Investieren Sie regelmäßig einen festen Betrag. Sehen Sie, wie konsequentes Investieren Ihr Portfolio über die Zeit wachsen lässt.',
-    dca_amount_lbl:'Betrag pro Periode (€)', dca_freq_lbl:'Häufigkeit',
-    dca_years_lbl:'Anlagejahre', dca_rate_lbl:'Jährliche Rendite (%)',
-    dca_monthly:'Monatlich', dca_weekly:'Wöchentlich', dca_quarterly:'Vierteljährlich', dca_yearly:'Jährlich',
-    dca_invested_lbl:'Gesamtinvestition', dca_final_lbl:'Endwert',
-    dca_profit_lbl:'Gewinn', dca_roi_lbl:'Rendite',
-    dca_chart_invested:'Investiert', dca_chart_value:'Portfoliowert',
-    cmp_title:'Zinseszins (FV)',
-    cmp_desc:'Berechnen Sie den zukünftigen Wert einer Einmalanlage mit Zinseszins: FV = PV × (1 + r)ⁿ.',
-    cmp_pv_lbl:'Anfangskapital (€)', cmp_rate_lbl:'Jährliche Rendite (%)',
-    cmp_years_lbl:'Jahre', cmp_freq_lbl:'Verzinsung pro Jahr',
-    cmp_annual:'Jährlich', cmp_monthly:'Monatlich', cmp_weekly:'Wöchentlich', cmp_daily:'Täglich',
-    cmp_initial_lbl:'Anfangskapital', cmp_fv_lbl:'Zukünftiger Wert',
-    cmp_gain_lbl:'Gesamtgewinn', cmp_mult_lbl:'Vielfaches (x)',
-    cmp_chart_simple:'Einfache Verzinsung', cmp_chart_compound:'Zinseszins',
-    dcf_title:'DCF — Abgezinster Barwert',
-    dcf_desc:'Wie viel ist ein zukünftiger Betrag heute wert? PV = FV ÷ (1 + r)ⁿ',
-    dcf_fv_lbl:'Zukünftiger Wert (€)', dcf_rate_lbl:'Diskontierungssatz (%)',
-    dcf_years_lbl:'Jahre in der Zukunft',
-    dcf_future_lbl:'Zukünftiger Wert', dcf_pv_lbl:'Barwert (heute)',
-    dcf_diff_lbl:'Differenz (Opportunitätskosten)', dcf_req_lbl:'Erforderliche heutige Investition',
-    dcf_chart_nominal:'Nominalwert', dcf_chart_pv:'Barwert (DCF)',
-    be_title:'Break-Even Calculator',
-    be_desc:'Bei welchem Preis erreicht Ihre Kaufposition die Gewinnschwelle?',
-    be_avg_lbl:'Durchschnittlicher Kaufpreis (€)', be_invested_lbl:'Investitionsbetrag (€)',
-    be_fees_lbl:'Gesamtgebühren (%)', be_target_lbl:'Gewinnziel (%)',
-    be_breakeven_lbl:'Gewinnschwellenpreis', be_profit_price_lbl:'Gewinnzielpreis',
-    be_coins_lbl:'Coin-Betrag', be_profit_eur_lbl:'Gewinn beim Ziel',
-    be_chart_pnl:'Gewinn/Verlust (€)',
-    year_lbl:'Jahr',
   }
 };
 
@@ -1473,7 +1321,7 @@ function t(key) {
 function setLang(lang) {
   currentLang = lang;
   localStorage.setItem('cryptolive_lang', lang);
-  const langMap = {el:'ΕΛ', en:'EN', fr:'FR', de:'DE'};
+  const langMap = {el:'ΕΛ', en:'EN'};
   document.querySelectorAll('.lang-btn').forEach(b => {
     b.classList.toggle('active', b.textContent.trim() === langMap[lang]);
   });
@@ -1482,10 +1330,22 @@ function setLang(lang) {
     const val = t(key);
     if (val) el.textContent = val;
   });
-  // Update tabs
+  // Update placeholder attributes
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    el.placeholder = t(el.getAttribute('data-i18n-ph'));
+  });
+  // Update tabs (also covered by data-i18n now, but keep for safety)
   const tabs = document.querySelectorAll('.tool-tab');
   const tabKeys = ['tab_dca','tab_compound','tab_dcf','tab_breakeven'];
   tabs.forEach((tab, i) => { if (tabKeys[i]) tab.textContent = t(tabKeys[i]); });
+  // Re-render current page to update dynamic content
+  if (typeof currentPage !== 'undefined') {
+    if (currentPage === 'market') renderMarketGrid();
+    if (currentPage === 'gainers') renderGainersLosers();
+    if (currentPage === 'portfolio') renderHoldings();
+    if (currentPage === 'trending') loadTrendingPage();
+    if (currentPage === 'home') { if (typeof trendingData !== 'undefined' && trendingData.length) renderTrendingMini(); fetchFNG(); }
+  }
 }
 
 // ===================== CONSTANTS =====================
@@ -1635,7 +1495,7 @@ function setSyncStatus(synced) {
   if (!el) return;
   if (synced) {
     el.className = 'sync-indicator';
-    el.textContent = '✓ Συγχρονισμένο';
+    el.textContent = t('synced');
   } else {
     el.className = 'sync-indicator syncing';
     el.textContent = '↻ Συγχρονισμός...';
@@ -2628,13 +2488,13 @@ function calcDCA() {
   for (let y = 0; y <= years; y++) {
     const ni = freq * y;
     const fvi = r === 0 ? amount * ni : amount * ((Math.pow(1 + r, ni) - 1) / r);
-    labels.push('Έτος ' + y);
+    labels.push(t('year_lbl') + ' ' + y);
     investedData.push(parseFloat((amount * ni).toFixed(2)));
     valueData.push(parseFloat(fvi.toFixed(2)));
   }
   makeLineChart('dca-chart', labels, [
-    { label: 'Επένδυση', data: investedData, borderColor: '#6b7a99', backgroundColor: 'rgba(107,122,153,0.08)', fill: true, tension: 0.3, pointRadius: 3 },
-    { label: 'Αξία Χαρτοφυλακίου', data: valueData, borderColor: '#00d4ff', backgroundColor: 'rgba(0,212,255,0.08)', fill: true, tension: 0.3, pointRadius: 3 }
+    { label: t('dca_chart_invested'), data: investedData, borderColor: '#6b7a99', backgroundColor: 'rgba(107,122,153,0.08)', fill: true, tension: 0.3, pointRadius: 3 },
+    { label: t('dca_chart_value'), data: valueData, borderColor: '#00d4ff', backgroundColor: 'rgba(0,212,255,0.08)', fill: true, tension: 0.3, pointRadius: 3 }
   ]);
 }
 
@@ -2658,13 +2518,13 @@ function calcCompound() {
 
   const labels = [], valData = [], simpleData = [];
   for (let y = 0; y <= years; y++) {
-    labels.push('Έτος ' + y);
+    labels.push(t('year_lbl') + ' ' + y);
     valData.push(parseFloat((pv * Math.pow(1 + annualRate/n, n*y)).toFixed(2)));
     simpleData.push(parseFloat((pv * (1 + annualRate * y)).toFixed(2)));
   }
   makeLineChart('cmp-chart', labels, [
-    { label: 'Απλό Επιτόκιο', data: simpleData, borderColor: '#6b7a99', backgroundColor: 'rgba(107,122,153,0.06)', fill: true, tension: 0.3, pointRadius: 3, borderDash: [6,4] },
-    { label: 'Ανατοκισμός', data: valData, borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', fill: true, tension: 0.3, pointRadius: 3 }
+    { label: t('cmp_chart_simple'), data: simpleData, borderColor: '#6b7a99', backgroundColor: 'rgba(107,122,153,0.06)', fill: true, tension: 0.3, pointRadius: 3, borderDash: [6,4] },
+    { label: t('cmp_chart_compound'), data: valData, borderColor: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', fill: true, tension: 0.3, pointRadius: 3 }
   ]);
 }
 
@@ -2686,13 +2546,13 @@ function calcDCF() {
 
   const labels = [], pvData = [], nomData = [];
   for (let y = 0; y <= years; y++) {
-    labels.push('Έτος ' + y);
+    labels.push(t('year_lbl') + ' ' + y);
     pvData.push(parseFloat((fv / Math.pow(1 + rate, years - y)).toFixed(2)));
     nomData.push(parseFloat(fv.toFixed(2)));
   }
   makeLineChart('dcf-chart', labels, [
-    { label: 'Ονομαστική Αξία', data: nomData, borderColor: '#6b7a99', backgroundColor: 'transparent', fill: false, tension: 0, pointRadius: 0, borderDash: [6,4] },
-    { label: 'Παρούσα Αξία (DCF)', data: pvData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3, pointRadius: 3 }
+    { label: t('dcf_chart_nominal'), data: nomData, borderColor: '#6b7a99', backgroundColor: 'transparent', fill: false, tension: 0, pointRadius: 0, borderDash: [6,4] },
+    { label: t('dcf_chart_pv'), data: pvData, borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.3, pointRadius: 3 }
   ]);
 }
 
@@ -2734,7 +2594,7 @@ function calcBreakEven() {
   if (!ctx) return;
   toolCharts['be-chart'] = new Chart(ctx, {
     type: 'bar',
-    data: { labels, datasets: [{ label: 'Κέρδος/Ζημιά (€)', data: pnlData, backgroundColor: colors, borderRadius: 4 }] },
+    data: { labels, datasets: [{ label: t('be_chart_pnl'), data: pnlData, backgroundColor: colors, borderRadius: 4 }] },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
