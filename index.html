@@ -787,9 +787,93 @@
     .stat-value.up { color: var(--green); }
     .stat-value.down { color: var(--red); }
     .modal-loading { text-align: center; padding: 3rem 0; color: var(--muted); }
+
+    /* ── PAGES ── */
+    .page { display: none; min-height: calc(100vh - 60px); padding-bottom: 3rem; }
+    .page.active { display: block; animation: pageIn 0.38s cubic-bezier(0.4,0,0.2,1); }
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .page-hero { max-width: 1000px; margin: 0 auto; padding: 3rem 2rem 2rem; }
+    .page-hero h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.3rem; letter-spacing: -0.5px; }
+    .page-hero p  { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+    /* ── MOTION ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.55;
+    }
+    body > *:not(#bg-canvas):not(#splash) { position: relative; z-index: 1; }
+
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    [data-reveal].revealed { opacity: 1; transform: none; }
+    [data-reveal-delay="1"] { transition-delay: 0.1s; }
+    [data-reveal-delay="2"] { transition-delay: 0.2s; }
+    [data-reveal-delay="3"] { transition-delay: 0.3s; }
+
+    .ripple-host { position: relative; overflow: hidden; }
+    .ripple-wave {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(88,166,255,0.2);
+      transform: scale(0);
+      animation: rippleOut 0.55s ease-out forwards;
+      pointer-events: none;
+    }
+    @keyframes rippleOut {
+      to { transform: scale(5); opacity: 0; }
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .stat-value { animation: countUp 0.4s ease both; }
+
+    /* Glowing card border on hover */
+    .card { position: relative; }
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, rgba(88,166,255,0.5), rgba(163,113,247,0.5));
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 0.25s;
+      border-radius: inherit;
+    }
+    .card:hover::after { opacity: 1; }
+
+    /* Ticker tape live label */
+    .live-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--green);
+      background: rgba(63,185,80,0.12);
+      border: 1px solid rgba(63,185,80,0.25);
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 10px;
+      vertical-align: middle;
+      letter-spacing: 0.05em;
+    }
   </style>
 </head>
 <body>
+
+<canvas id="bg-canvas"></canvas>
 
 <!-- SPLASH -->
 <div id="splash">
@@ -811,28 +895,33 @@
 
 <!-- NAV -->
 <nav>
-  <a class="nav-brand" href="#"><span>₿</span> CryptoLive</a>
+  <a class="nav-brand" href="#" onclick="showPage('home');return false"><span>₿</span> CryptoLive</a>
   <ul class="nav-links">
-    <li><a href="#market">Αγορά</a></li>
-    <li><a href="#portfolio">Χαρτοφυλάκιο</a></li>
-    <li><a href="#converter">Μετατροπέας</a></li>
+    <li><a href="#" data-page="home"      onclick="showPage('home');return false">Αρχική</a></li>
+    <li><a href="#" data-page="market"    onclick="showPage('market');return false">Αγορά</a></li>
+    <li><a href="#" data-page="portfolio" onclick="showPage('portfolio');return false">Χαρτοφυλάκιο</a></li>
+    <li><a href="#" data-page="converter" onclick="showPage('converter');return false">Μετατροπέας</a></li>
   </ul>
   <button class="nav-refresh" id="refresh-btn">↻ Ανανέωση</button>
 </nav>
 
-<!-- HERO -->
-<section class="hero" id="top">
-  <div class="hero-blob-wrap"><div class="hero-blob hero-blob-1"></div><div class="hero-blob hero-blob-2"></div></div>
-  <h1 class="hero-title">Crypto <span>Live</span> Prices</h1>
-  <p class="hero-sub"><span class="live-dot"></span>Ενημέρωση κάθε 30 δευτερόλεπτα &nbsp;·&nbsp; Τιμές σε EUR</p>
-  <div class="hero-cards" id="hero-cards"></div>
-</section>
+<div id="pages">
 
-<!-- MARKET -->
-<section id="market">
+<!-- PAGE: HOME -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-blob-wrap"><div class="hero-blob hero-blob-1"></div><div class="hero-blob hero-blob-2"></div></div>
+    <h1 class="hero-title">Crypto <span>Live</span> Prices</h1>
+    <p class="hero-sub"><span class="live-dot"></span>Τιμές σε EUR &nbsp;<span class="live-label">⬤ LIVE</span></p>
+    <div class="hero-cards" id="hero-cards"></div>
+  </section>
+</div>
+
+<!-- PAGE: MARKET -->
+<div class="page" id="page-market">
   <div class="section-wrap">
     <div class="section-header">
-      <span class="section-title">Όλα τα Νομίσματα</span>
+      <span class="section-title">Αγορά</span>
       <input id="search" type="search" placeholder="Αναζήτηση..." autocomplete="off" />
     </div>
   </div>
@@ -840,10 +929,10 @@
     <div class="grid" id="grid"></div>
     <div id="error" class="error-msg" style="display:none"></div>
   </div>
-</section>
+</div>
 
-<!-- PORTFOLIO -->
-<section id="portfolio">
+<!-- PAGE: PORTFOLIO -->
+<div class="page" id="page-portfolio">
   <div class="portfolio-wrap">
     <div class="section-header" style="margin-bottom:1rem">
       <span class="section-title">Χαρτοφυλάκιο</span>
@@ -865,11 +954,11 @@
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- CONVERTER -->
-<section id="converter">
-  <div class="converter-wrap">
+<!-- PAGE: CONVERTER -->
+<div class="page" id="page-converter">
+  <div class="converter-wrap" style="padding-top:2rem">
     <div class="section-header" style="margin-bottom:1rem">
       <span class="section-title">Μετατροπέας Συναλλάγματος</span>
     </div>
@@ -896,7 +985,9 @@
       <div class="conv-result" id="conv-result">Εισάγετε ποσό για μετατροπή.</div>
     </div>
   </div>
-</section>
+</div>
+
+</div><!-- /pages -->
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay">
@@ -1040,7 +1131,7 @@
         <div class="hero-card-change ${isUp ? 'up' : 'down'}" data-change="${coin.id}">${isUp?'+':''}${pct.toFixed(2)}% (24h)</div>
         <canvas class="hero-spark"></canvas>
       `;
-      card.addEventListener('click', () => openModal(coin.id));
+      card.addEventListener('click', e => { addRipple(card, e); openModal(coin.id); });
       heroEl.appendChild(card);
 
       requestAnimationFrame(() => {
@@ -1106,7 +1197,7 @@
       }
 
       card.style.animationDelay = `${filtered.indexOf(coin) * 30}ms`;
-      card.addEventListener('click', () => openModal(coin.id));
+      card.addEventListener('click', e => { addRipple(card, e); openModal(coin.id); });
       fragment.appendChild(card);
 
       requestAnimationFrame(() => {
@@ -1702,20 +1793,18 @@
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-  // ── Nav active link ──
-  const sections = ['top','market','portfolio','converter'];
-  window.addEventListener('scroll', () => {
-    const links = document.querySelectorAll('.nav-links a');
-    let current = '';
-    sections.forEach(id => {
-      const el = document.getElementById(id);
-      if (el && window.scrollY >= el.offsetTop - 80) current = id;
+  // ── Page routing ──
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById('page-' + name);
+    if (page) page.classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.classList.toggle('active', a.dataset.page === name);
     });
-    links.forEach(a => {
-      const href = a.getAttribute('href').replace('#', '');
-      a.classList.toggle('active', href === current || (current === 'top' && href === 'market'));
-    });
-  });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (name === 'market' && !document.querySelector('.card')) render();
+  }
+  showPage('home');
 
   // ── Init ──
   showSkeletons();
@@ -1732,6 +1821,84 @@
   document.getElementById('search').addEventListener('input', e => {
     query = e.target.value.trim().toLowerCase();
     if (data.length) render();
+  });
+
+  // ── Particle background ──
+  (function initParticles() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx    = canvas.getContext('2d');
+    const COLORS = ['rgba(88,166,255,', 'rgba(163,113,247,', 'rgba(63,185,80,'];
+    let pts = [];
+
+    function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+    window.addEventListener('resize', resize);
+    resize();
+
+    for (let i = 0; i < 70; i++) {
+      pts.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.6 + 0.4,
+        dx: (Math.random() - 0.5) * 0.35,
+        dy: (Math.random() - 0.5) * 0.35,
+        a: Math.random() * 0.35 + 0.08,
+        c: COLORS[Math.floor(Math.random() * COLORS.length)],
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pts.forEach(p => {
+        p.x = (p.x + p.dx + canvas.width)  % canvas.width;
+        p.y = (p.y + p.dy + canvas.height) % canvas.height;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.c + p.a + ')';
+        ctx.fill();
+      });
+      // Draw connecting lines between close particles
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 90) {
+            ctx.beginPath();
+            ctx.moveTo(pts[i].x, pts[i].y);
+            ctx.lineTo(pts[j].x, pts[j].y);
+            ctx.strokeStyle = `rgba(88,166,255,${0.07 * (1 - dist/90)})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // ── Scroll reveal ──
+  (function initReveal() {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+  })();
+
+  // ── Ripple ──
+  function addRipple(el, e) {
+    el.classList.add('ripple-host');
+    const r = document.createElement('span');
+    r.className = 'ripple-wave';
+    const rect = el.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+    el.appendChild(r);
+    r.addEventListener('animationend', () => r.remove());
+  }
+
+  // Apply ripple to nav buttons
+  document.querySelectorAll('.nav-refresh, .port-add-btn, .swap-btn').forEach(btn => {
+    btn.addEventListener('click', e => addRipple(btn, e));
   });
 
   // ── Splash ──
