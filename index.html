@@ -1081,43 +1081,43 @@ main { padding-top:96px;min-height:100vh;position:relative;z-index:1; }
     <!-- BREAK-EVEN -->
     <div id="tool-breakeven" class="tool-panel">
       <div class="tool-card">
-        <div class="tool-card-title">Break-Even Calculator</div>
-        <div class="tool-card-desc">Σε ποια τιμή σπάει το κόστος αγοράς σας; Υπολογίστε την τιμή ισορροπίας λαμβάνοντας υπόψη fees, μέση τιμή αγοράς και στόχο κέρδους.</div>
+        <div class="tool-card-title" data-i18n="be_title">Break-Even Calculator</div>
+        <div class="tool-card-desc" data-i18n="be_desc">Σε ποια τιμή σπάει το κόστος αγοράς σας; Υπολογίστε την τιμή ισορροπίας λαμβάνοντας υπόψη fees, μέση τιμή αγοράς και στόχο κέρδους.</div>
         <div class="tool-inputs">
           <div class="tool-field">
-            <label class="tool-label">Μέση Τιμή Αγοράς (€)</label>
+            <label class="tool-label" data-i18n="be_avg_lbl">Μέση Τιμή Αγοράς (€)</label>
             <input type="number" class="tool-input" id="be-avg" value="50000" min="0.000001" step="any">
           </div>
           <div class="tool-field">
-            <label class="tool-label">Ποσό Επένδυσης (€)</label>
+            <label class="tool-label" data-i18n="be_invested_lbl">Ποσό Επένδυσης (€)</label>
             <input type="number" class="tool-input" id="be-invested" value="5000" min="1">
           </div>
           <div class="tool-field">
-            <label class="tool-label">Συνολικά Fees (%)</label>
+            <label class="tool-label" data-i18n="be_fees_lbl">Συνολικά Fees (%)</label>
             <input type="number" class="tool-input" id="be-fees" value="0.5" step="0.01" min="0">
           </div>
           <div class="tool-field">
-            <label class="tool-label">Στόχος Κέρδους (%)</label>
+            <label class="tool-label" data-i18n="be_target_lbl">Στόχος Κέρδους (%)</label>
             <input type="number" class="tool-input" id="be-target" value="20" step="0.1" min="0">
           </div>
         </div>
-        <button class="tool-calc-btn" onclick="calcBreakEven()">⚡ Υπολογισμός</button>
+        <button class="tool-calc-btn" onclick="calcBreakEven()" data-i18n="calc_btn">⚡ Υπολογισμός</button>
         <div id="be-results" class="tool-hidden">
           <div class="tool-result-grid">
             <div class="tool-result-card">
-              <div class="tool-result-label">Τιμή Break-Even</div>
+              <div class="tool-result-label" data-i18n="be_breakeven_lbl">Τιμή Break-Even</div>
               <div class="tool-result-value blue" id="be-breakeven">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Τιμή Στόχου Κέρδους</div>
+              <div class="tool-result-label" data-i18n="be_profit_price_lbl">Τιμή Στόχου Κέρδους</div>
               <div class="tool-result-value pos" id="be-profit-price">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Ποσό Κρυπτονομίσματος</div>
+              <div class="tool-result-label" data-i18n="be_coins_lbl">Ποσό Κρυπτονομίσματος</div>
               <div class="tool-result-value" id="be-coins">—</div>
             </div>
             <div class="tool-result-card">
-              <div class="tool-result-label">Κέρδος στο στόχο</div>
+              <div class="tool-result-label" data-i18n="be_profit_eur_lbl">Κέρδος στο στόχο</div>
               <div class="tool-result-value pos" id="be-profit-eur">—</div>
             </div>
           </div>
@@ -1939,7 +1939,7 @@ function renderHeroGrid() {
 
 function showHeroError() {
   const grid = document.getElementById('hero-grid');
-  if (grid) grid.innerHTML = `<div class="error-state"><div class="error-icon">⚠️</div><div class="error-text">Αποτυχία φόρτωσης δεδομένων</div><div class="error-sub">Ελέγξτε τη σύνδεσή σας</div><button class="btn-retry" onclick="refreshData()">↻ Επανάληψη</button></div>`;
+  if (grid) grid.innerHTML = `<div class="error-state"><div class="error-icon">⚠️</div><div class="error-text">${t('err_load')}</div><div class="error-sub">${t('err_conn')}</div><button class="btn-retry" onclick="refreshData()">${t('btn_retry')}</button></div>`;
 }
 
 // ===================== SPARKLINE =====================
@@ -1997,7 +1997,7 @@ function renderMarketGrid() {
   });
 
   if (!filtered.length) {
-    grid.innerHTML = '<div class="error-state"><div class="error-icon">🔍</div><div class="error-text">Δεν βρέθηκαν νομίσματα</div><div class="error-sub">Δοκιμάστε διαφορετικό όρο</div></div>';
+    grid.innerHTML = `<div class="error-state"><div class="error-icon">🔍</div><div class="error-text">${t('no_coins')}</div><div class="error-sub">${t('no_coins_sub')}</div></div>`;
     return;
   }
 
@@ -2067,7 +2067,7 @@ async function loadTrendingPage() {
     } catch(e) {}
   }
   if (!trendingData.length) {
-    grid.innerHTML = '<div class="error-state" style="grid-column:1/-1"><div class="error-icon">⚠️</div><div class="error-text">Αποτυχία φόρτωσης</div><button class="btn-retry" onclick="loadTrendingPage()">Επανάληψη</button></div>';
+    grid.innerHTML = `<div class="error-state" style="grid-column:1/-1"><div class="error-icon">⚠️</div><div class="error-text">${t('err_no_trend')}</div><button class="btn-retry" onclick="loadTrendingPage()">${t('btn_retry')}</button></div>`;
     return;
   }
   grid.innerHTML = trendingData.map((item, idx) => {
@@ -2157,8 +2157,8 @@ function drawFNGGauge(value, classification) {
   const el = document.getElementById('fng-number');
   if (el) el.textContent = value;
   const labels = {
-    'Extreme Fear': 'Ακραίος Φόβος', 'Fear': 'Φόβος',
-    'Neutral': 'Ουδέτερο', 'Greed': 'Απληστία', 'Extreme Greed': 'Ακραία Απληστία'
+    'Extreme Fear': t('fng_extreme_fear'), 'Fear': t('fng_fear'),
+    'Neutral': t('fng_neutral'), 'Greed': t('fng_greed'), 'Extreme Greed': t('fng_extreme_greed')
   };
   const txt = document.getElementById('fng-text');
   if (txt) txt.textContent = labels[classification] || classification;
@@ -2192,7 +2192,7 @@ function renderHoldings() {
   const list = document.getElementById('holdings-list');
   if (!list) return;
   if (!portfolioHoldings.length) {
-    list.innerHTML = `<div class="empty-state"><div class="es-icon">📭</div><div class="es-text">Δεν έχετε θέσεις ακόμη</div><div class="es-sub">Προσθέστε το πρώτο σας νόμισμα από τη φόρμα αριστερά</div></div>`;
+    list.innerHTML = `<div class="empty-state"><div class="es-icon">📭</div><div class="es-text">${t('empty_port')}</div><div class="es-sub">${t('empty_port_sub')}</div></div>`;
     updatePortfolioTotals(0, 0);
     updatePortfolioChart([]);
     return;
@@ -2252,7 +2252,7 @@ function updatePortfolioChart(data) {
 
   if (!data.length) {
     if (portfolioChart) { try { portfolioChart.destroy(); } catch(e) {} portfolioChart = null; }
-    if (legend) legend.textContent = 'Προσθέστε νομίσματα για να δείτε τη διανομή';
+    if (legend) legend.textContent = t('chart_add_coins');
     return;
   }
 
