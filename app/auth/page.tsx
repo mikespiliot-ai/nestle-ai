@@ -42,6 +42,10 @@ export default function AuthPage() {
     checkEmail: lang === 'en'
       ? 'Check your email to confirm your account.'
       : 'Ελέγξτε το email σας για επιβεβαίωση.',
+    forgotPassword: lang === 'en' ? 'Forgot password?' : 'Ξέχασες τον κωδικό;',
+    resetSent: lang === 'en'
+      ? 'Check your email for the password reset link.'
+      : 'Ελέγξτε το email σας για τον σύνδεσμο επαναφοράς κωδικού.',
   }
 
   const clearState = () => {
@@ -72,6 +76,24 @@ export default function AuthPage() {
       setError(error.message)
     } else {
       setSuccess(t.checkEmail)
+    }
+  }
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError(lang === 'en' ? 'Enter your email first.' : 'Εισάγετε πρώτα το email σας.')
+      return
+    }
+    clearState()
+    setLoading(true)
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: typeof window !== 'undefined' ? window.location.origin + '/auth/callback' : undefined,
+    })
+    setLoading(false)
+    if (error) {
+      setError(error.message)
+    } else {
+      setSuccess(t.resetSent)
     }
   }
 
@@ -127,13 +149,24 @@ export default function AuthPage() {
               />
             </div>
             <div className="auth-field">
-              <label className="auth-label">{t.passwordLabel}</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label className="auth-label">{t.passwordLabel}</label>
+                {tab === 'login' && (
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    style={{ background: 'none', border: 'none', color: 'var(--muted)', fontSize: '0.75rem', cursor: 'pointer', padding: 0 }}
+                  >
+                    {t.forgotPassword}
+                  </button>
+                )}
+              </div>
               <input
                 className="tool-input"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
+                required={tab === 'register'}
                 autoComplete={tab === 'login' ? 'current-password' : 'new-password'}
                 placeholder="••••••••"
               />

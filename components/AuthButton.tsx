@@ -30,6 +30,8 @@ export default function AuthButton() {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user)
       setLoading(false)
+    }).catch(() => {
+      setLoading(false)
     })
 
     // Listen for auth state changes
