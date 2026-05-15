@@ -69,9 +69,7 @@ export default function CoinModal({ coin, onClose }: CoinModalProps) {
       setLoading(true)
       setChartError(null)
       try {
-        const res = await fetch(
-          `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=eur&days=${days}`
-        )
+        const res = await fetch(`/api/chart?id=${coin.id}&days=${days}`)
         if (!res.ok) {
           setChartError(t.loadError)
           return
