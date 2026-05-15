@@ -69,7 +69,9 @@ export default function NavWithMenu() {
               <div className="live-dot" />
               <span>LIVE</span>
             </div>
-            <AuthButton />
+            <div className="nav-auth-hide">
+              <AuthButton />
+            </div>
             <button
               className={`nav-menu-btn${menuOpen ? ' open' : ''}`}
               onClick={menuOpen ? closeMenu : openMenu}
@@ -101,6 +103,9 @@ export default function NavWithMenu() {
             ))}
           </div>
           <div className="menu-overlay-footer">
+            <div className="menu-auth-section">
+              <AuthButton />
+            </div>
             <div className="lang-switcher">
               <button
                 className={`lang-btn${lang === 'el' ? ' active' : ''}`}
