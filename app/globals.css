@@ -1918,7 +1918,7 @@ img {
 }
 
 /* ===== AUTH PAGE ===== */
-.auth-page { display:flex; align-items:center; justify-content:center; min-height:70vh; padding:2rem; }
+.auth-page { display:flex; align-items:flex-start; justify-content:center; min-height:70vh; padding:2rem; padding-top:4rem; }
 .auth-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:2.5rem; width:100%; max-width:420px; }
 .auth-tabs { display:flex; gap:8px; margin-bottom:2rem; background:rgba(255,255,255,0.04); border-radius:10px; padding:4px; }
 .auth-tab { flex:1; padding:8px; border-radius:8px; border:none; background:transparent; color:var(--muted); font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
