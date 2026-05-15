@@ -3,6 +3,8 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import Image from 'next/image'
 import { fmt, fmtPct } from '@/lib/format'
 import { supabase } from '@/lib/supabase'
+import AuthButton from '@/components/AuthButton'
+import type { User } from '@supabase/supabase-js'
 
 interface Coin {
   id: string
@@ -22,7 +24,7 @@ interface Holding {
   coin?: Coin
 }
 
-function getOrCreateUserId(): string {
+function getOrCreateAnonId(): string {
   let uid = localStorage.getItem('portfolio_uid')
   if (!uid) {
     uid = crypto.randomUUID()
@@ -39,6 +41,9 @@ export default function PortfolioPage() {
   const [buyPrice, setBuyPrice] = useState('')
   const [loading, setLoading] = useState(false)
   const [userId, setUserId] = useState<string>('')
+  const [user, setUser] = useState<User | null>(null)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [migrating, setMigrating] = useState(false)
   const chartRef = useRef<HTMLCanvasElement>(null)
   const chartInstanceRef = useRef<unknown>(null)
 
@@ -50,10 +55,61 @@ export default function PortfolioPage() {
       .catch(() => {})
   }, [])
 
-  // Init user ID
-  useEffect(() => {
-    setUserId(getOrCreateUserId())
+  // Migrate anonymous holdings to authenticated user
+  const migrateAnonHoldings = useCallback(async (authenticatedUserId: string) => {
+    const anonId = localStorage.getItem('portfolio_uid')
+    if (!anonId) return
+
+    const { data: anonHoldings } = await supabase
+      .from('portfolio')
+      .select('id')
+      .eq('user_id', anonId)
+
+    if (!anonHoldings || anonHoldings.length === 0) return
+
+    setMigrating(true)
+    try {
+      await supabase
+        .from('portfolio')
+        .update({ user_id: authenticatedUserId })
+        .eq('user_id', anonId)
+
+      localStorage.removeItem('portfolio_uid')
+    } finally {
+      setMigrating(false)
+    }
   }, [])
+
+  // Track auth state and set userId
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      const authedUser = data.user
+      setUser(authedUser)
+      if (authedUser) {
+        migrateAnonHoldings(authedUser.id).then(() => {
+          setUserId(authedUser.id)
+          setAuthLoading(false)
+        })
+      } else {
+        setUserId(getOrCreateAnonId())
+        setAuthLoading(false)
+      }
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const authedUser = session?.user ?? null
+      setUser(authedUser)
+      if (authedUser) {
+        migrateAnonHoldings(authedUser.id).then(() => {
+          setUserId(authedUser.id)
+        })
+      } else {
+        setUserId(getOrCreateAnonId())
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [migrateAnonHoldings])
 
   // Load holdings from Supabase
   const loadHoldings = useCallback(async (uid: string) => {
@@ -167,6 +223,20 @@ export default function PortfolioPage() {
     if (coin) setBuyPrice(coin.current_price.toString())
   }
 
+  if (authLoading || migrating) {
+    return (
+      <div className="page-content page-enter">
+        <div className="hero-section">
+          <div className="section-label">Portfolio</div>
+          <h1 className="page-section-title">Χαρτοφυλάκιο</h1>
+        </div>
+        <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--muted)' }}>
+          {migrating ? 'Μεταφορά δεδομένων...' : 'Φόρτωση...'}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="page-content page-enter">
       <div className="hero-section">
@@ -176,6 +246,19 @@ export default function PortfolioPage() {
           Παρακολουθήστε τις επενδύσεις σας και υπολογίστε το P&amp;L σας.
         </p>
       </div>
+
+      {/* Auth banner — shown when NOT logged in */}
+      {!user && (
+        <div className="portfolio-auth-banner">
+          <div className="portfolio-auth-banner-text">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
+              <path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2zm0 12c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z" fill="currentColor" opacity="0.7"/>
+            </svg>
+            <span>Συνδέσου με Google για να αποθηκεύσεις το χαρτοφυλάκιό σου</span>
+          </div>
+          <AuthButton />
+        </div>
+      )}
 
       <div className="portfolio-layout">
         <div className="portfolio-form">

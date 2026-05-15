@@ -1,6 +1,7 @@
 'use client'
 import { useRouter, usePathname } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
+import AuthButton from '@/components/AuthButton'
 
 const PAGES = [
   { num: '01', label: { el: 'Αρχική', en: 'Home' }, href: '/' },
@@ -67,6 +68,7 @@ export default function NavWithMenu() {
               <div className="live-dot" />
               <span>LIVE</span>
             </div>
+            <AuthButton />
             <button
               className={`nav-menu-btn${menuOpen ? ' open' : ''}`}
               onClick={menuOpen ? closeMenu : openMenu}
