@@ -27,6 +27,7 @@ export default function NavWithMenu() {
   const switchLang = useCallback((l: 'el' | 'en') => {
     setLang(l)
     localStorage.setItem('lang', l)
+    window.dispatchEvent(new Event('langchange'))
   }, [])
 
   const openMenu = useCallback(() => setMenuOpen(true), [])
