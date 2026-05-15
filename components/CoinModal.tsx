@@ -30,23 +30,52 @@ const PERIODS = [
   { label: 'Max', days: 'max' as const },
 ]
 
+function useLang() {
+  const [lang, setLang] = useState<'el' | 'en'>('el')
+  useEffect(() => {
+    const stored = localStorage.getItem('lang') as 'el' | 'en' | null
+    if (stored === 'en') setLang('en')
+    const handler = () => {
+      const v = localStorage.getItem('lang') as 'el' | 'en' | null
+      setLang(v === 'en' ? 'en' : 'el')
+    }
+    window.addEventListener('langchange', handler)
+    return () => window.removeEventListener('langchange', handler)
+  }, [])
+  return lang
+}
+
 export default function CoinModal({ coin, onClose }: CoinModalProps) {
   const chartRef = useRef<HTMLCanvasElement>(null)
   const chartInstanceRef = useRef<unknown>(null)
-  const [activePeriod, setActivePeriod] = useState(7)
+  const [activePeriod, setActivePeriod] = useState<number | 'max'>(7)
   const [chartData, setChartData] = useState<number[]>([])
   const [chartLabels, setChartLabels] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
+  const [chartError, setChartError] = useState<string | null>(null)
+  const lang = useLang()
+
+  const t = {
+    marketCap: 'Market Cap',
+    volume: 'Volume 24h',
+    circulating: lang === 'en' ? 'Circulating Supply' : 'Κυκλοφορία',
+    loadingText: lang === 'en' ? 'Loading...' : 'Φόρτωση...',
+    loadError: lang === 'en' ? 'Load error' : 'Σφάλμα φόρτωσης',
+  }
 
   const fetchChart = useCallback(
     async (days: number | 'max') => {
       if (!coin) return
       setLoading(true)
+      setChartError(null)
       try {
         const res = await fetch(
           `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=eur&days=${days}`
         )
-        if (!res.ok) return
+        if (!res.ok) {
+          setChartError(t.loadError)
+          return
+        }
         const json = await res.json()
         const prices: [number, number][] = json.prices || []
         setChartData(prices.map((p) => p[1]))
@@ -59,12 +88,13 @@ export default function CoinModal({ coin, onClose }: CoinModalProps) {
           })
         )
       } catch {
-        // ignore
+        setChartError(t.loadError)
       } finally {
         setLoading(false)
       }
     },
-    [coin]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [coin, lang]
   )
 
   useEffect(() => {
@@ -195,15 +225,15 @@ export default function CoinModal({ coin, onClose }: CoinModalProps) {
 
         <div className="modal-stats">
           <div className="modal-stat">
-            <div className="modal-stat-label">Market Cap</div>
+            <div className="modal-stat-label">{t.marketCap}</div>
             <div className="modal-stat-value">{fmtMktCap(coin.market_cap)}</div>
           </div>
           <div className="modal-stat">
-            <div className="modal-stat-label">Volume 24h</div>
+            <div className="modal-stat-label">{t.volume}</div>
             <div className="modal-stat-value">{fmtMktCap(coin.total_volume)}</div>
           </div>
           <div className="modal-stat">
-            <div className="modal-stat-label">Κυκλοφορία</div>
+            <div className="modal-stat-label">{t.circulating}</div>
             <div className="modal-stat-value">
               {coin.circulating_supply
                 ? (coin.circulating_supply / 1e6).toFixed(2) + 'M'
@@ -218,7 +248,7 @@ export default function CoinModal({ coin, onClose }: CoinModalProps) {
               key={p.label}
               className={`period-btn${activePeriod === p.days ? ' active' : ''}`}
               onClick={() => {
-                setActivePeriod(p.days as number)
+                setActivePeriod(p.days as number | 'max')
                 fetchChart(p.days)
               }}
             >
@@ -230,7 +260,11 @@ export default function CoinModal({ coin, onClose }: CoinModalProps) {
         <div className="modal-chart-wrap">
           {loading ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--muted)' }}>
-              Φόρτωση...
+              {t.loadingText}
+            </div>
+          ) : chartError ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--red)', fontSize: '0.9rem' }}>
+              {chartError}
             </div>
           ) : (
             <canvas ref={chartRef} />

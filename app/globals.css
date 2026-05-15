@@ -1889,3 +1889,17 @@ img {
     padding: 6px 12px;
   }
 }
+
+/* ===== AUTH PAGE ===== */
+.auth-page { display:flex; align-items:center; justify-content:center; min-height:70vh; padding:2rem; }
+.auth-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:2.5rem; width:100%; max-width:420px; }
+.auth-tabs { display:flex; gap:8px; margin-bottom:2rem; background:rgba(255,255,255,0.04); border-radius:10px; padding:4px; }
+.auth-tab { flex:1; padding:8px; border-radius:8px; border:none; background:transparent; color:var(--muted); font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
+.auth-tab.active { background:rgba(255,255,255,0.1); color:var(--text); }
+.auth-field { display:flex; flex-direction:column; gap:6px; margin-bottom:1rem; }
+.auth-label { font-size:0.8rem; color:var(--muted); }
+.auth-error { color:var(--red); font-size:0.82rem; margin-top:8px; text-align:center; }
+.auth-success { color:var(--green); font-size:0.9rem; margin-top:8px; text-align:center; padding:12px; background:rgba(0,230,118,0.08); border-radius:8px; }
+.auth-divider { display:flex; align-items:center; gap:12px; margin:1.2rem 0; color:var(--muted); font-size:0.8rem; }
+.auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.08); }
+.auth-google-full { width:100%; justify-content:center; }
