@@ -1,3 +1,9 @@
 {
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/cron/portfolio-notify",
+      "schedule": "0 17 * * 1-5"
+    }
+  ]
 }
