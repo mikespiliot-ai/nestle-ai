@@ -70,7 +70,13 @@ export default function AuthPage() {
     e.preventDefault()
     clearState()
     setLoading(true)
-    const { error } = await supabase.auth.signUp({ email, password })
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: typeof window !== 'undefined' ? window.location.origin + '/auth/callback' : undefined,
+      },
+    })
     setLoading(false)
     if (error) {
       setError(error.message)
