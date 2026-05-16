@@ -40,6 +40,8 @@ export default function PortfolioPage() {
   const [amount, setAmount] = useState('')
   const [buyPrice, setBuyPrice] = useState('')
   const [loading, setLoading] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
+  const [holdingsLoading, setHoldingsLoading] = useState(false)
   const [userId, setUserId] = useState<string>('')
   const [user, setUser] = useState<User | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
@@ -114,11 +116,13 @@ export default function PortfolioPage() {
   // Load holdings from Supabase
   const loadHoldings = useCallback(async (uid: string) => {
     if (!uid) return
+    setHoldingsLoading(true)
     const { data } = await supabase
       .from('portfolios')
       .select('*')
       .eq('user_id', uid)
     if (data) setHoldings(data)
+    setHoldingsLoading(false)
   }, [])
 
   useEffect(() => {
@@ -194,15 +198,24 @@ export default function PortfolioPage() {
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!selectedCoinId || !amount || !buyPrice || !userId) return
+    const parsedAmount = parseFloat(amount)
+    const parsedPrice = parseFloat(buyPrice)
+    if (parsedAmount <= 0 || parsedPrice <= 0 || isNaN(parsedAmount) || isNaN(parsedPrice)) {
+      setAddError('Εισάγετε έγκυρες τιμές')
+      return
+    }
+    setAddError(null)
     setLoading(true)
     try {
       const { data, error } = await supabase.from('portfolios').insert({
         coin_id: selectedCoinId,
-        amount: parseFloat(amount),
-        buy_price: parseFloat(buyPrice),
+        amount: parsedAmount,
+        buy_price: parsedPrice,
         user_id: userId,
       }).select()
-      if (!error && data) {
+      if (error) {
+        setAddError('Σφάλμα αποθήκευσης. Δοκιμάστε ξανά.')
+      } else if (data) {
         setHoldings((prev) => [...prev, data[0]])
         setAmount('')
         setBuyPrice('')
@@ -213,8 +226,8 @@ export default function PortfolioPage() {
   }
 
   const handleRemove = async (id: string) => {
-    await supabase.from('portfolios').delete().eq('id', id)
-    setHoldings((prev) => prev.filter((h) => h.id !== id))
+    const { error } = await supabase.from('portfolios').delete().eq('id', id)
+    if (!error) setHoldings((prev) => prev.filter((h) => h.id !== id))
   }
 
   const handleCoinChange = (coinId: string) => {
@@ -306,6 +319,7 @@ export default function PortfolioPage() {
                 required
               />
             </div>
+            {addError && <div style={{ color: 'var(--red)', fontSize: '0.82rem', marginBottom: 8 }}>{addError}</div>}
             <button type="submit" className="btn-primary" disabled={loading}>
               {loading ? 'Αποθήκευση...' : '+ Προσθήκη'}
             </button>
@@ -347,7 +361,9 @@ export default function PortfolioPage() {
 
       <div className="holdings-list">
         <h2>Holdings</h2>
-        {enrichedHoldings.length === 0 ? (
+        {holdingsLoading ? (
+          <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--muted)' }}>Φόρτωση...</div>
+        ) : enrichedHoldings.length === 0 ? (
           <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--muted)' }}>
             Δεν υπάρχουν αποθηκευμένα holdings.
           </div>
