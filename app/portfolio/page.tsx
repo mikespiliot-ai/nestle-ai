@@ -61,7 +61,7 @@ export default function PortfolioPage() {
     if (!anonId) return
 
     const { data: anonHoldings } = await supabase
-      .from('portfolio')
+      .from('portfolios')
       .select('id')
       .eq('user_id', anonId)
 
@@ -70,7 +70,7 @@ export default function PortfolioPage() {
     setMigrating(true)
     try {
       await supabase
-        .from('portfolio')
+        .from('portfolios')
         .update({ user_id: authenticatedUserId })
         .eq('user_id', anonId)
 
@@ -115,7 +115,7 @@ export default function PortfolioPage() {
   const loadHoldings = useCallback(async (uid: string) => {
     if (!uid) return
     const { data } = await supabase
-      .from('portfolio')
+      .from('portfolios')
       .select('*')
       .eq('user_id', uid)
     if (data) setHoldings(data)
@@ -196,7 +196,7 @@ export default function PortfolioPage() {
     if (!selectedCoinId || !amount || !buyPrice || !userId) return
     setLoading(true)
     try {
-      const { data, error } = await supabase.from('portfolio').insert({
+      const { data, error } = await supabase.from('portfolios').insert({
         coin_id: selectedCoinId,
         amount: parseFloat(amount),
         buy_price: parseFloat(buyPrice),
@@ -213,7 +213,7 @@ export default function PortfolioPage() {
   }
 
   const handleRemove = async (id: string) => {
-    await supabase.from('portfolio').delete().eq('id', id)
+    await supabase.from('portfolios').delete().eq('id', id)
     setHoldings((prev) => prev.filter((h) => h.id !== id))
   }
 
