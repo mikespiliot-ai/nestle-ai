@@ -27,11 +27,30 @@ logger = logging.getLogger(__name__)
 
 
 class BacktestAgent:
-    def __init__(self):
+    def __init__(self, env: dict = None):
         self.portfolio = Portfolio(db_path=PAPER_TRADING_DB)
-        self.executor = PaperExecutor(self.portfolio)
-        self.perf = PerformanceTracker(self.portfolio)
+        self.perf      = PerformanceTracker(self.portfolio)
         os.makedirs(REPORTS_DIR, exist_ok=True)
+
+        # Use Binance Testnet if keys are configured, otherwise local SQLite
+        self._testnet_executor = None
+        if env and env.get("BINANCE_TESTNET_API_KEY") and env.get("BINANCE_TESTNET_SECRET"):
+            try:
+                from paper_trading.binance_testnet import BinanceTestnetClient
+                from paper_trading.testnet_executor import TestnetExecutor
+                client = BinanceTestnetClient(
+                    api_key=env["BINANCE_TESTNET_API_KEY"],
+                    secret=env["BINANCE_TESTNET_SECRET"],
+                )
+                if client.ping():
+                    self._testnet_executor = TestnetExecutor(client, self.portfolio)
+                    logger.info("[BacktestAgent] Binance Testnet connected ✓")
+                else:
+                    logger.warning("[BacktestAgent] Testnet ping failed — falling back to local SQLite")
+            except Exception as e:
+                logger.warning("[BacktestAgent] Testnet init failed (%s) — using local SQLite", e)
+
+        self.executor = PaperExecutor(self.portfolio)  # always available as fallback
 
     # ── public entry point ──────────────────────────────────────────────────
 
@@ -67,7 +86,11 @@ class BacktestAgent:
         logger.info("[BacktestAgent] Portfolio drift=%.4f", drift)
 
         if drift > REBALANCE_DRIFT_THRESHOLD or not current_weights:
-            self.executor.rebalance(target_weights, price_map)
+            if self._testnet_executor:
+                logger.info("[BacktestAgent] Rebalancing via Binance Testnet")
+                self._testnet_executor.rebalance(target_weights)
+            else:
+                self.executor.rebalance(target_weights, price_map)
             logger.info("[BacktestAgent] Rebalanced to %d positions", len(target_weights))
         else:
             logger.info("[BacktestAgent] Drift below threshold — no rebalancing needed")
@@ -89,6 +112,10 @@ class BacktestAgent:
         Execute emergency portfolio action.
         action: 'DEFENSIVE' | 'REDUCE' | 'HEDGE'
         """
+        if self._testnet_executor and action == "DEFENSIVE":
+            self._testnet_executor.move_to_cash(fraction=0.80)
+            return
+
         if action == "DEFENSIVE":
             self.executor.move_to_cash(fraction=0.80, price_map=price_map)
         elif action == "REDUCE":

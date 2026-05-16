@@ -33,16 +33,18 @@ logger = logging.getLogger(__name__)
 
 def load_env() -> dict:
     return {
-        "ANTHROPIC_API_KEY": os.environ.get("ANTHROPIC_API_KEY", ""),
-        "COINGECKO_API_KEY": os.environ.get("COINGECKO_API_KEY", ""),
-        "BINANCE_API_KEY": os.environ.get("BINANCE_API_KEY", ""),
-        "BINANCE_SECRET": os.environ.get("BINANCE_SECRET", ""),
-        "TWITTER_BEARER_TOKEN": os.environ.get("TWITTER_BEARER_TOKEN", ""),
-        "REDDIT_CLIENT_ID": os.environ.get("REDDIT_CLIENT_ID", ""),
-        "REDDIT_CLIENT_SECRET": os.environ.get("REDDIT_CLIENT_SECRET", ""),
-        "GLASSNODE_API_KEY": os.environ.get("GLASSNODE_API_KEY", ""),
-        "NEWSAPI_KEY": os.environ.get("NEWSAPI_KEY", ""),
-        "FRED_API_KEY": os.environ.get("FRED_API_KEY", ""),
+        "ANTHROPIC_API_KEY":        os.environ.get("ANTHROPIC_API_KEY", ""),
+        "COINGECKO_API_KEY":        os.environ.get("COINGECKO_API_KEY", ""),
+        "BINANCE_API_KEY":          os.environ.get("BINANCE_API_KEY", ""),
+        "BINANCE_SECRET":           os.environ.get("BINANCE_SECRET", ""),
+        "BINANCE_TESTNET_API_KEY":  os.environ.get("BINANCE_TESTNET_API_KEY", ""),
+        "BINANCE_TESTNET_SECRET":   os.environ.get("BINANCE_TESTNET_SECRET", ""),
+        "TWITTER_BEARER_TOKEN":     os.environ.get("TWITTER_BEARER_TOKEN", ""),
+        "REDDIT_CLIENT_ID":         os.environ.get("REDDIT_CLIENT_ID", ""),
+        "REDDIT_CLIENT_SECRET":     os.environ.get("REDDIT_CLIENT_SECRET", ""),
+        "GLASSNODE_API_KEY":        os.environ.get("GLASSNODE_API_KEY", ""),
+        "NEWSAPI_KEY":              os.environ.get("NEWSAPI_KEY", ""),
+        "FRED_API_KEY":             os.environ.get("FRED_API_KEY", ""),
     }
 
 
@@ -83,7 +85,7 @@ def monthly_cycle(env: dict, dry_run: bool = False):
     QuantAgent().run()
 
     if not dry_run:
-        BacktestAgent().run(env)
+        BacktestAgent(env=env).run(env)
 
     logger.info("MONTHLY CYCLE COMPLETE: %s", datetime.utcnow().isoformat())
     logger.info("=" * 60)
@@ -161,7 +163,7 @@ def main():
 
     # Start background sensors
     from agents.backtest_agent import BacktestAgent
-    ba = BacktestAgent()
+    ba = BacktestAgent(env=env)
     start_sensor_threads(env, ba)
 
     # Schedule monthly on 1st of each month at 00:00 UTC

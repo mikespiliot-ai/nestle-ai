@@ -1,0 +1,30 @@
+services:
+  - type: worker
+    name: crypto-portfolio-bot
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: COINGECKO_API_KEY
+        sync: false
+      - key: BINANCE_TESTNET_API_KEY
+        sync: false
+      - key: BINANCE_TESTNET_SECRET
+        sync: false
+      - key: TWITTER_BEARER_TOKEN
+        sync: false
+      - key: REDDIT_CLIENT_ID
+        sync: false
+      - key: REDDIT_CLIENT_SECRET
+        sync: false
+      - key: GLASSNODE_API_KEY
+        sync: false
+      - key: NEWSAPI_KEY
+        sync: false
+      - key: FRED_API_KEY
+        sync: false
+    disk:
+      name: portfolio-data
+      mountPath: /app/data
+      sizeGB: 1

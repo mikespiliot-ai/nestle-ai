@@ -129,3 +129,7 @@ MONTHLY_CYCLE_HOUR = 0  # 00:00 UTC
 # ─── Paths ────────────────────────────────────────────────────────────────────
 PAPER_TRADING_DB = "paper_trading/portfolio.db"
 MEMORY_FILE = "memory/state.json"
+
+# ─── Binance Testnet ──────────────────────────────────────────────────────────
+BINANCE_TESTNET_BASE = "https://testnet.binance.vision/api/v3"
+BINANCE_TESTNET_WS   = "wss://testnet.binance.vision/ws"
