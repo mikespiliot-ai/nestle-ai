@@ -50,8 +50,16 @@ class Portfolio:
                     date TEXT PRIMARY KEY,
                     nav REAL NOT NULL
                 );
-                INSERT OR IGNORE INTO cash (id, amount) VALUES (1, ?);
-            """, (INITIAL_CAPITAL_USD,))
+                CREATE TABLE IF NOT EXISTS metadata (
+                    key TEXT PRIMARY KEY,
+                    value TEXT
+                );
+            """)
+            # executescript cannot use parameterised queries — separate execute
+            conn.execute(
+                "INSERT OR IGNORE INTO cash (id, amount) VALUES (1, ?)",
+                (INITIAL_CAPITAL_USD,),
+            )
 
     def _conn(self) -> sqlite3.Connection:
         return sqlite3.connect(self.db_path)
@@ -164,7 +172,7 @@ class Portfolio:
     def set_mode(self, mode: str):
         """Track whether portfolio is in DEFENSIVE or NORMAL mode."""
         with self._conn() as conn:
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS metadata (key TEXT PRIMARY KEY, value TEXT);
-                INSERT OR REPLACE INTO metadata (key, value) VALUES ('mode', ?);
-            """, (mode,))
+            conn.execute(
+                "INSERT OR REPLACE INTO metadata (key, value) VALUES ('mode', ?)",
+                (mode,),
+            )
