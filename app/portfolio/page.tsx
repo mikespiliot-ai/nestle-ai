@@ -334,30 +334,51 @@ export default function PortfolioPage() {
             </button>
           </form>
 
-          {/* Notification toggle — only for logged-in users */}
+          {/* Notification panel — only for logged-in users */}
           {user && (
-            <div style={{ marginTop: 20, padding: 16, background: 'var(--surface2)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>Ημερήσιες Ειδοποιήσεις</div>
-                <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>Email κάθε μέρα στις 17:00 (Δευ–Παρ)</div>
+            <div style={{ marginTop: 20, background: 'var(--surface2)', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)' }}>
+              <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span>🔔</span> Ειδοποιήσεις
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {notifySaved && <span style={{ fontSize: 11, color: 'var(--green)' }}>Αποθηκεύτηκε ✓</span>}
+                  <button
+                    type="button"
+                    onClick={() => handleToggleNotify(!notifyEnabled)}
+                    style={{
+                      width: 44, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer',
+                      background: notifyEnabled ? 'var(--blue)' : 'var(--surface3)',
+                      position: 'relative', transition: 'background 0.2s',
+                    }}
+                  >
+                    <span style={{
+                      position: 'absolute', top: 3, left: notifyEnabled ? 23 : 3,
+                      width: 18, height: 18, borderRadius: '50%', background: '#fff',
+                      transition: 'left 0.2s',
+                    }} />
+                  </button>
+                </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                {notifySaved && <span style={{ fontSize: 11, color: 'var(--green)' }}>✓</span>}
-                <button
-                  type="button"
-                  onClick={() => handleToggleNotify(!notifyEnabled)}
-                  style={{
-                    width: 44, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer',
-                    background: notifyEnabled ? 'var(--blue)' : 'var(--surface3)',
-                    position: 'relative', transition: 'background 0.2s',
-                  }}
-                >
-                  <span style={{
-                    position: 'absolute', top: 3, left: notifyEnabled ? 23 : 3,
-                    width: 18, height: 18, borderRadius: '50%', background: '#fff',
-                    transition: 'left 0.2s',
-                  }} />
-                </button>
+              <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                  <span style={{ color: 'var(--muted)' }}>Κατάσταση</span>
+                  <span style={{ color: notifyEnabled ? 'var(--green)' : 'var(--muted)', fontWeight: 600 }}>
+                    {notifyEnabled ? '● Ενεργές' : '○ Ανενεργές'}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                  <span style={{ color: 'var(--muted)' }}>Email</span>
+                  <span style={{ color: 'var(--text)' }}>{user.email}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                  <span style={{ color: 'var(--muted)' }}>Χρονοδιάγραμμα</span>
+                  <span style={{ color: 'var(--text)' }}>Δευ–Παρ στις 17:00</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                  <span style={{ color: 'var(--muted)' }}>Περιεχόμενο</span>
+                  <span style={{ color: 'var(--text)' }}>Αξία + P&L ανά νόμισμα</span>
+                </div>
               </div>
             </div>
           )}
